@@ -56,7 +56,7 @@ function getPermutations (arr) {
     return result;
 }
 
-const inputs = document.querySelectorAll('.num-input');
+const inputs = document.querySelectorAll('.tool-input');
 
 inputs.forEach((input, idx) => {
     input.addEventListener('input', (e) => {
