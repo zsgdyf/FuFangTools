@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BMI计算器 - 浮方工具箱</title>
+        <link rel="stylesheet" href="../css/theme.css">
+        <link rel="stylesheet" href="../css/bmi.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <a href="../index.html" class="back-link">← 返回工具箱</a>
+            <header>
+                <h1>BMI计算器</h1>
+                <p class="desc">输入身高和体重，计算你的身体质量指数</p>
+            </header>
+
+            <div class="bmi-inputs">
+                <div class="input-group">
+                    <label for="height">身高 (cm)</label>
+                    <input type="number" id="height" class="bmi-input" placeholder="例如: 175">
+                </div>
+                <div class="input-group">
+                    <label for="weight">体重 (kg)</label>
+                    <input type="number" id="weight" class="bmi-input" placeholder="例如: 65">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-calc" id="calculate-btn">开始计算 ✨</button>
+                <button class="btn-clear" id="clear-btn">清空 ↺</button>
+            </div>
+
+            <div class="result-section" id="result-box" style="display: none;">
+                <p id="bmi-value">你的BMI值是: <strong></strong></p>
+                <p id="bmi-category">结果: <strong></strong></p>
+                <div class="bmi-indicator-bar">
+                    <div class="indicator-segment underweight"></div>
+                    <div class="indicator-segment normal"></div>
+                    <div class="indicator-segment overweight"></div>
+                    <div id="bmi-pointer" class="indicator-pointer">
+                        <div class="pointer-arrow"></div>
+                    </div>
+                </div>
+                <div class="indicator-labels">
+                    <span>18.5</span>
+                    <span>24.0</span>
+                </div>
+            </div>
+        </div>
+
+        <script src="../js/bmi.js"></script>
+    </body>
+
+</html>
