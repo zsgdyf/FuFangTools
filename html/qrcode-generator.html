@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>二维码生成工具 - 浮方工具箱</title>
+        <link rel="stylesheet" href="../css/theme.css">
+        <link rel="stylesheet" href="../css/tool-common.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <a href="../index.html" class="back-link">← 返回工具箱</a>
+            <header>
+                <h1>二维码生成工具</h1>
+                <p class="desc">输入文本，立即生成二维码</p>
+            </header>
+
+            <div class="inputs-container">
+                <div class="input-group">
+                    <label for="qr-text">文本内容</label>
+                    <textarea id="qr-text" class="tool-input" rows="4" placeholder="输入任何文本或网址"></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-calc" id="generate-btn">立即生成 ✨</button>
+                <button class="btn-clear" id="clear-btn">清空 ↺</button>
+            </div>
+
+            <div class="result-section" id="result-box" style="display: none;">
+                <div class="qr-code-container" id="qrcode"></div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script src="../js/qrcode.js"></script>
+    </body>
+
+</html>
