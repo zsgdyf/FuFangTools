@@ -2,7 +2,7 @@
  * Cloudflare Pages Function: 处理短链接解析
  * 该接口通过模拟 HTTP 请求跟随重定向，获取短链接对应的原始长链接
  */
-export async function onRequest(context) {
+export async function onRequest (context) {
   const { searchParams } = new URL(context.request.url);
   const shortUrl = searchParams.get('url');
 
@@ -19,6 +19,13 @@ export async function onRequest(context) {
     const response = await fetch(shortUrl, {
       method: 'HEAD',
       redirect: 'follow',
+      headers: {
+        // 使用一个非常标准的 Windows 桌面 Chrome UA，不带任何移动端标识
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        // 加上 Referer，有时候能欺骗服务器
+        'Referer': 'https://www.kuaishou.com/',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+      }
     });
 
     return new Response(JSON.stringify({ longUrl: response.url }), {
