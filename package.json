@@ -1,0 +1,36 @@
+{
+  "name": "fufangtools",
+  "version": "1.0.0",
+  "description": "一个独立的桌面工具箱应用",
+  "main": "server.js",
+  "bin": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "pkg .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "pkg": {
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zsgdyf/FuFangTools.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zsgdyf/FuFangTools/issues"
+  },
+  "homepage": "https://github.com/zsgdyf/FuFangTools#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "open": "^8.4.2"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
