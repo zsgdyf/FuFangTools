@@ -55,7 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (data.longUrl) {
-                    results.push({ original: url, long: data.longUrl, status: 'success' });
+                    let processedLongUrl = data.longUrl;
+                    const ccShareIndex = processedLongUrl.indexOf('?cc=share');
+                    if (ccShareIndex !== -1) {
+                        processedLongUrl = processedLongUrl.substring(0, ccShareIndex);
+                    }
+                    results.push({ original: url, long: processedLongUrl, status: 'success' });
                     successCount++;
                 } else {
                     results.push({ original: url, long: data.error || '解析失败', status: 'error' });
