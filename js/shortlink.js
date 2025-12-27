@@ -118,17 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
      * 全部复制按钮点击事件
      */
     copyBtn.addEventListener('click', () => {
-        // 提取所有成功解析的长链接，用换行符连接
-        const longUrls = Array.from(document.querySelectorAll('.result-item.success .long-expanded'))
+        // 提取所有结果（包括成功和失败的），用换行符连接
+        const allResultTexts = Array.from(document.querySelectorAll('.result-item .long-expanded'))
             .map(el => el.textContent)
             .join('\n');
 
-        if (!longUrls) {
-            alert('没有可复制的成功解析结果');
+        if (!allResultTexts) {
+            alert('没有可复制的结果');
             return;
         }
 
-        navigator.clipboard.writeText(longUrls).then(() => {
+        navigator.clipboard.writeText(allResultTexts).then(() => {
             const originalText = copyBtn.textContent;
             copyBtn.textContent = '已复制全部！';
             setTimeout(() => {
