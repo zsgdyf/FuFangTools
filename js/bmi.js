@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         heightInput.value = '';
         weightInput.value = '';
         resultBox.style.display = 'none';
-        // Clear category class to reset styling if any
+        // 清除类别样式类以重置样式
         bmiCategoryEl.className = ''; 
         heightInput.focus();
     }
@@ -44,11 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryClass = 'overweight';
         }
         
-        // Update pointer position
-        const MIN_BMI_DISPLAY = 12;
-        const MAX_BMI_DISPLAY = 40;
-        let pointerPercentage = (bmi - MIN_BMI_DISPLAY) / (MAX_BMI_DISPLAY - MIN_BMI_DISPLAY) * 100;
-        pointerPercentage = Math.max(0, Math.min(100, pointerPercentage)); // Clamp between 0 and 100
+        // 更新指针位置
+        let pointerPercentage;
+        const MIN_DISPLAY_BMI = 12;
+        const MAX_DISPLAY_BMI = 40;
+        
+        // 限制 BMI 数值用于显示计算
+        const displayBmi = Math.max(MIN_DISPLAY_BMI, Math.min(MAX_DISPLAY_BMI, bmi));
+
+        if (displayBmi < 18.5) {
+            // 偏瘦范围 (MIN_DISPLAY_BMI 到 18.5) 映射到 0% - 25%
+            pointerPercentage = ((displayBmi - MIN_DISPLAY_BMI) / (18.5 - MIN_DISPLAY_BMI)) * 25;
+        } else if (displayBmi < 24.0) {
+            // 正常范围 (18.5 到 24.0) 映射到 25% - 60%
+            pointerPercentage = 25 + ((displayBmi - 18.5) / (24.0 - 18.5)) * 35;
+        } else {
+            // 偏胖范围 (24.0 到 MAX_DISPLAY_BMI) 映射到 60% - 100%
+            pointerPercentage = 60 + ((displayBmi - 24.0) / (MAX_DISPLAY_BMI - 24.0)) * 40;
+        }
+
         bmiPointer.style.left = `${pointerPercentage}%`;
 
         bmiValueEl.textContent = bmiFormatted;
@@ -60,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calculateBtn.addEventListener('click', calculateBMI);
 
-    // Allow 'Enter' key to trigger calculation
+    // 允许使用 'Enter' 键触发计算
     weightInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             calculateBMI();

@@ -1,5 +1,5 @@
 /* ===================================
-   COMMON STYLES FOR ALL TOOL PAGES
+   所有工具页面的通用样式
    =================================== */
 
 .container {
@@ -44,7 +44,7 @@ p.desc {
     font-size: 0.95rem;
 }
 
-/* --- Generic Input Styles --- */
+/* --- 通用输入框样式 --- */
 .inputs-container {
     display: flex;
     gap: 20px;
@@ -52,7 +52,7 @@ p.desc {
 }
 
 .input-group {
-    width: 100%; /* Default to full width, can be overridden if needed */
+    width: 100%; /* 默认为全宽，如果需要可以覆盖 */
     display: flex;
     flex-direction: column;
 }
@@ -99,7 +99,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 
-/* --- Button Group Styles --- */
+/* --- 按钮组样式 --- */
 .btn-group {
     display: flex;
     gap: 12px;
@@ -151,7 +151,7 @@ input[type=number]::-webkit-outer-spin-button {
     transform: scale(0.98);
 }
 
-/* --- Common Result Section --- */
+/* --- 通用结果区域 --- */
 .result-section {
     margin-top: 30px;
     border-top: 2px dashed #e2e8f0;
@@ -165,7 +165,7 @@ input[type=number]::-webkit-outer-spin-button {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* --- Media Queries --- */
+/* --- 媒体查询 --- */
 @media (max-width: 480px) {
     .container {
         padding: 25px;
