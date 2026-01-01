@@ -5,7 +5,9 @@
 ## 功能列表
 
 *   **24点计算器**: 输入4个数字，自动寻找所有可能的24点解法。
-*   **短链接转换器**: 一键还原短链接背后的原始长地址。
+*   **短链接转换器**: 支持批量输入，一键还原多个短链接背后的原始长地址。
+*   **BMI计算器**: 输入身高和体重，快速计算身体质量指数（BMI）。
+*   **二维码生成工具**: 输入任意文本或网址，即时生成对应的二维码图片。
 
 ## 如何运行（开发模式）
 
@@ -48,19 +50,16 @@
 
 3.  **复制静态资源文件**:
     `.exe` 文件本身不包含前端的 HTML, CSS, JavaScript 等文件。你需要将它们复制到 `dist` 文件夹，与 `fufangtools.exe` 放在一起。
-    在项目根目录运行以下命令完成复制（适用于 Windows）：
+    在项目根目录运行以下命令完成复制（推荐使用 PowerShell）：
     ```powershell
-    xcopy css dist\css\ /E /I /Y
-    xcopy html dist\html\ /E /I /Y
-    xcopy js dist\js\ /E /I /Y
-    copy /Y index.html dist\
-    copy /Y favicon.ico dist\
-    copy /Y favicon.svg dist\
-    copy /Y favicon-96x96.png dist\
+    # 复制 css, html, js 文件夹到 dist
+    Copy-Item -Path css, html, js -Destination dist -Recurse -Force
+
+    # 复制根目录文件到 dist
+    Copy-Item -Path index.html, favicon.ico, favicon.svg, favicon-96x96.png -Destination dist -Force
     ```
-    *   `/E`: 复制目录和子目录，包括空目录。
-    *   `/I`: 如果目标不存在并且复制多个文件，则假定目标是目录。
-    *   `/Y`: 禁止提示确认要覆盖现有文件。
+    *   `Copy-Item` 是 PowerShell 的标准复制命令，支持批量复制和递归。
+    *   如果你使用旧版 CMD (命令提示符)，请使用 `xcopy` 和 `copy` 命令。
 
 ### 如何运行打包后的 `.exe`
 
@@ -76,16 +75,13 @@
 
 1.  **修改代码**: 在项目根目录修改你的源文件。
 2.  **执行更新流程**:
-    在项目根目录运行：
+    在项目根目录运行（PowerShell）：
     ```powershell
     npm run build
-    xcopy css dist\css\ /E /I /Y
-    xcopy html dist\html\ /E /I /Y
-    xcopy js dist\js\ /E /I /Y
-    copy /Y index.html dist\
-    copy /Y favicon.ico dist\
-    copy /Y favicon.svg dist\
-    copy /Y favicon-96x96.png dist\
+    
+    # 重新复制资源文件
+    Copy-Item -Path css, html, js -Destination dist -Recurse -Force
+    Copy-Item -Path index.html, favicon.ico, favicon.svg, favicon-96x96.png -Destination dist -Force
     ```
     *   这会重新生成 `fufangtools.exe` 并更新 `dist` 文件夹中的所有静态资源。
     *   请确保在运行这些命令之前，没有 `fufangtools.exe` 进程正在运行。
