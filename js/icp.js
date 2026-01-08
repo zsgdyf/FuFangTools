@@ -23,11 +23,11 @@
         
         // 创建简单的 footer 元素
         const footer = document.createElement('footer');
+        footer.style.width = '100%';
         footer.style.textAlign = 'center';
-        footer.style.padding = '20px 0';
-        footer.style.marginTop = '20px';
+        footer.style.padding = '30px 0 20px 0'; // 增加顶部间距，使其与主体内容分离
         footer.style.fontSize = '12px';
-        footer.style.color = '#94a3b8'; // 仅保留文字颜色，使其不突兀
+        footer.style.color = '#94a3b8';
 
         // 创建链接
         const link = document.createElement('a');
@@ -42,12 +42,7 @@
 
         footer.appendChild(link);
 
-        // 尝试将其放入 .container 中以保持居中对齐，如果没有 container 则直接放入 body
-        const container = document.querySelector('.container');
-        if (container) {
-            container.appendChild(footer);
-        } else {
-            document.body.appendChild(footer);
-        }
+        // 直接追加到 body 的最末尾
+        document.body.appendChild(footer);
     }
 })();

@@ -19,6 +19,7 @@ body {
     background: var(--bg-gradient);
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
