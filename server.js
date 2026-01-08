@@ -11,6 +11,13 @@ const port = 3000;
 const publicPath = process.pkg ? path.join(path.dirname(process.execPath), '/') : path.join(__dirname, '/');
 app.use(express.static(publicPath));
 
+// 获取应用配置 (用于前端判断是否显示备案号等)
+app.get('/api/app-config', (req, res) => {
+    res.json({
+        icpNumber: process.env.ICP_NUMBER || '' 
+    });
+});
+
 // 解析短链接的 API 端点
 app.get('/api/expand', async (req, res) => {
     const shortUrl = req.query.url;
@@ -45,6 +52,8 @@ app.listen(port, () => {
     const url = `http://localhost:${port}`;
     console.log(`浮方工具箱已启动！请勿关闭此窗口。`);
     console.log(`服务器正在运行，请访问: ${url}`);
-    // 自动在用户的默认浏览器中打开URL
-    open(url);
+    // 自动在用户的默认浏览器中打开URL (仅在非生产环境下)
+    if (process.env.NODE_ENV !== 'production') {
+        open(url);
+    }
 });
