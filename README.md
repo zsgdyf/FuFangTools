@@ -20,12 +20,12 @@
 ### 2. 桌面版离线使用
 如果您需要即使断网也能使用（除短链接还原外的）所有工具，可以将本项目打包为 Windows 桌面应用。
 
-*   **打包指南**: 详见 [PKG_BUILD.md](./PKG_BUILD.md)
+*   **打包指南**: 详见 [PKG_BUILD.md](./docs/PKG_BUILD.md)
 
 ### 3. 服务器部署
 如果您拥有自己的服务器，想部署一份私有的工具箱：
 
-*   **阿里云/服务器部署指南**: 详见 [DEPLOY_ALIYUN.md](./DEPLOY_ALIYUN.md)
+*   **阿里云/服务器部署指南**: 详见 [DEPLOY_ALIYUN.md](./docs/DEPLOY_ALIYUN.md)
 
 ## 💻 本地开发
 
