@@ -98,3 +98,51 @@ sudo ln -s /etc/nginx/sites-available/fufangtools /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
+
+## 5. (进阶) 双域名分离配置
+如果你希望 **主域名** (如 `example.com`) 只展示一个带备案号的静态页，而将 **应用** 放在 **子域名** (如 `app.example.com`)，请参考以下方案：
+
+### 5.1 准备工作
+1. 项目根目录下已自动生成 `landing_page` 文件夹，其中包含简单的静态主页。
+2. **重要**：请手动修改 `landing_page/index.html`，将 `鄂ICP备XXXXXXXX号` 替换为你真实的 ICP 备案号。
+3. 确保你的域名 DNS 解析已设置：
+   - `@` (主域名) -> 服务器 IP
+   - `app` (子域名) -> 服务器 IP (或你喜欢的其他前缀)
+
+### 5.2 Nginx 配置 (修改 /etc/nginx/sites-available/fufangtools)
+
+将配置修改为两个 server 块：
+
+```nginx
+# 1. 主域名服务器块 (纯静态，展示备案页)
+server {
+    listen 80;
+    server_name example.com www.example.com; # 【修改】替换为你的主域名
+
+    # 指向项目中的 landing_page 目录
+    # 注意：根据你的实际部署路径调整，假设项目在 /www/wwwroot/fufangtools
+    root /www/wwwroot/fufangtools/landing_page;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+# 2. 子域名服务器块 (反向代理，指向 Node 应用)
+server {
+    listen 80;
+    server_name app.example.com; # 【修改】替换为你的子域名
+
+    location / {
+        proxy_pass http://localhost:3000; # 指向 Node 服务端口
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+修改完成后，记得运行 `sudo nginx -t` 测试配置，并 `sudo systemctl restart nginx` 重启服务。
