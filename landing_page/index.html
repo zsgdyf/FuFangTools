@@ -1,93 +1,223 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>浮方工具箱 - 主页</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #f8fafc;
-            color: #334155;
-        }
-        .content {
-            text-align: center;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #1e293b;
-        }
-        p {
-            font-size: 1.1rem;
-            color: #64748b;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 2rem;
-            padding: 0.75rem 1.5rem;
-            background-color: #2563eb;
-            color: white;
-            text-decoration: none;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
-        .btn:hover {
-            background-color: #1d4ed8;
-        }
-        footer {
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            font-size: 12px;
-            color: #94a3b8;
-            background-color: #f1f5f9;
-        }
-        footer a {
-            color: inherit;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-        .police-box {
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="content">
-        <h1>欢迎访问</h1>
-        <p>本站正在运行中，请访问子域名使用应用服务。</p>
-        <!-- 如果你想在这个页面放置进入系统的按钮，可以取消下面的注释，并将 href 修改为你的子域名 -->
-        <!-- <a href="http://app.yourdomain.com" class="btn">进入系统</a> -->
-    </div>
 
-    <footer>
-        <div>
-            <!-- 请将下面的文本替换为您的真实ICP备案号 -->
-            <a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备XXXXXXXX号</a>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>浮方工具箱</title>
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/favicon-96x96.png">
+        <style>
+            /* Inlined CSS for self-contained static page */
+            :root {
+                --primary: #0ea5e9;
+                --primary-hover: #0284c7;
+                --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+                --card-bg: rgba(255, 255, 255, 0.85);
+                --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+                --text-main: #334155;
+                --text-light: #94a3b8;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+
+            body {
+                background: var(--bg-gradient);
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                color: var(--text-main);
+            }
+
+            .container {
+                background: var(--card-bg);
+                padding: 40px;
+                border-radius: 24px;
+                box-shadow: var(--shadow);
+                width: 100%;
+                max-width: 900px;
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                text-align: center;
+            }
+
+            header {
+                margin-bottom: 40px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                color: var(--primary);
+                margin-bottom: 8px;
+                letter-spacing: -0.5px;
+            }
+
+            p.desc {
+                color: var(--text-light);
+                font-size: 1.1rem;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .tool-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 25px;
+            }
+
+            .tool-card {
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                border-radius: 16px;
+                padding: 25px;
+                text-align: left;
+                text-decoration: none;
+                color: var(--text-main);
+                border: 1px solid #f1f5f9;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+                transition: all 0.2s ease;
+            }
+
+            .tool-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow);
+                border-color: var(--primary);
+            }
+
+            .card-icon {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+                line-height: 1;
+                color: var(--primary);
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: var(--text-main);
+            }
+
+            .card-desc {
+                font-size: 0.9rem;
+                color: var(--text-light);
+                line-height: 1.5;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding: 30px;
+                }
+
+                .tool-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .container {
+                    padding: 20px;
+                }
+
+                h1 {
+                    font-size: 2rem;
+                }
+
+                p.desc {
+                    font-size: 1rem;
+                }
+            }
+
+            /* Footer Styles */
+            footer {
+                width: 100%;
+                text-align: center;
+                padding: 30px 0 20px 0;
+                font-size: 12px;
+                color: #94a3b8;
+            }
+
+            footer a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            footer a:hover {
+                text-decoration: underline;
+            }
+
+            .police-box {
+                margin-top: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <h1>浮方工具箱</h1>
+                <p class="desc">浮方方的在线工具集合</p>
+            </header>
+
+            <main class="tool-grid">
+                <!-- 注意：这里的链接需要指向你的子域名应用 -->
+                <!-- 请将 'http://app.example.com' 替换为你真实的子域名 (例如 http://app.fufangtools.com) -->
+
+                <a href="http://app.example.com/html/calc-24.html" class="tool-card">
+                    <div class="card-icon">🖩</div>
+                    <div class="card-body">
+                        <h2 class="card-title">24点计算器</h2>
+                        <p class="card-desc">输入4个数字，自动寻找所有可能的24点解法。</p>
+                    </div>
+                </a>
+                <a href="http://app.example.com/html/shortlink-converter.html" class="tool-card">
+                    <div class="card-icon">🔗</div>
+                    <div class="card-body">
+                        <h2 class="card-title">短链接转换器</h2>
+                        <p class="card-desc">一键还原短链接背后的原始长地址。</p>
+                    </div>
+                </a>
+                <a href="http://app.example.com/html/bmi-calculator.html" class="tool-card">
+                    <div class="card-icon">⚖️</div>
+                    <div class="card-body">
+                        <h2 class="card-title">BMI计算器</h2>
+                        <p class="card-desc">根据身高和体重计算身体质量指数（BMI）。</p>
+                    </div>
+                </a>
+                <a href="http://app.example.com/html/qrcode-generator.html" class="tool-card">
+                    <div class="card-icon">📱</div>
+                    <div class="card-body">
+                        <h2 class="card-title">二维码生成工具</h2>
+                        <p class="card-desc">输入文本或网址，生成对应的二维码图片。</p>
+                    </div>
+                </a>
+            </main>
         </div>
-        <div class="police-box">
-            <!-- 假设备案图标也放在这个静态目录中，部署时记得复制图片文件到同级目录 -->
-            <img src="备案图标.png" style="width: 20px; height: 20px;" alt="警徽">
-            <a href="https://beian.mps.gov.cn/#/query/webSearch?code=42010302002809" rel="noreferrer" target="_blank">鄂公网安备42010302002809号</a>
-        </div>
-    </footer>
-</body>
+
+        <footer>
+            <div>
+                <a href="https://beian.miit.gov.cn/" target="_blank">鄂ICP备2026000731号</a>
+            </div>
+            <div class="police-box">
+                <img src="/备案图标.png" style="width: 20px; height: 20px;" alt="警徽">
+                <a href="https://beian.mps.gov.cn/#/query/webSearch?code=42010302002809" rel="noreferrer"
+                   target="_blank">鄂公网安备42010302002809号</a>
+            </div>
+        </footer>
+    </body>
+
 </html>
