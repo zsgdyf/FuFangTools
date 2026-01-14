@@ -52,6 +52,7 @@
     align-items: center;
     justify-content: center;
     height: auto;
+    flex: none;
 }
 
 /* 移动端适配 */
