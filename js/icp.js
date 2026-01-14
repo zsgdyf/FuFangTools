@@ -1,8 +1,8 @@
-(async function() {
+(async function () {
     try {
         // 尝试从服务器获取配置
         const response = await fetch('/api/app-config');
-        
+
         if (!response.ok) {
             return;
         }
@@ -18,9 +18,9 @@
         // 静默失败
     }
 
-    function renderFooter(icpNumber) {
+    function renderFooter (icpNumber) {
         const beianLink = "https://beian.miit.gov.cn/";
-        
+
         // 创建简单的 footer 元素
         const footer = document.createElement('footer');
         footer.style.width = '100%';
@@ -37,10 +37,10 @@
         icpLink.innerText = icpNumber;
         icpLink.style.color = 'inherit';
         icpLink.style.textDecoration = 'none';
-        
+
         icpLink.onmouseover = () => { icpLink.style.textDecoration = 'underline'; };
         icpLink.onmouseout = () => { icpLink.style.textDecoration = 'none'; };
-        
+
         icpDiv.appendChild(icpLink);
         footer.appendChild(icpDiv);
 
@@ -53,7 +53,7 @@
         gongAnDiv.style.gap = '5px';
 
         const iconImg = document.createElement('img');
-        iconImg.src = "/备案图标.png";
+        iconImg.src = "/assets/备案图标.png";
         iconImg.style.width = "20px";
         iconImg.style.height = "20px";
 
