@@ -1,0 +1,76 @@
+/* Base64 Converter Specific Styles */
+
+/* 覆盖 container 的默认最大宽度，因为左右两栏需要更多空间 */
+.container-wide {
+    max-width: 900px;
+}
+
+.converter-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+.input-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-section label {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.text-area {
+    width: 100%;
+    height: 300px;
+    resize: none;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.controls-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    min-width: 140px;
+}
+
+.btn-action {
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .converter-wrapper {
+        flex-direction: column;
+    }
+
+    .controls-section {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .text-area {
+        height: 150px;
+    }
+
+    .btn-action {
+        flex: 1;
+    }
+}
