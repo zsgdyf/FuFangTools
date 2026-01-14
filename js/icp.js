@@ -29,18 +29,49 @@
         footer.style.fontSize = '12px';
         footer.style.color = '#94a3b8';
 
-        // 创建链接
-        const link = document.createElement('a');
-        link.href = beianLink;
-        link.target = '_blank';
-        link.innerText = icpNumber;
-        link.style.color = 'inherit';
-        link.style.textDecoration = 'none';
+        // 1. ICP 备案号部分
+        const icpDiv = document.createElement('div');
+        const icpLink = document.createElement('a');
+        icpLink.href = beianLink;
+        icpLink.target = '_blank';
+        icpLink.innerText = icpNumber;
+        icpLink.style.color = 'inherit';
+        icpLink.style.textDecoration = 'none';
         
-        link.onmouseover = () => { link.style.textDecoration = 'underline'; };
-        link.onmouseout = () => { link.style.textDecoration = 'none'; };
+        icpLink.onmouseover = () => { icpLink.style.textDecoration = 'underline'; };
+        icpLink.onmouseout = () => { icpLink.style.textDecoration = 'none'; };
+        
+        icpDiv.appendChild(icpLink);
+        footer.appendChild(icpDiv);
 
-        footer.appendChild(link);
+        // 2. 公安备案号部分
+        const gongAnDiv = document.createElement('div');
+        gongAnDiv.style.marginTop = '5px';
+        gongAnDiv.style.display = 'flex';
+        gongAnDiv.style.alignItems = 'center';
+        gongAnDiv.style.justifyContent = 'center';
+        gongAnDiv.style.gap = '5px';
+
+        const iconImg = document.createElement('img');
+        iconImg.src = "/备案图标.png";
+        iconImg.style.width = "20px";
+        iconImg.style.height = "20px";
+
+        const gongAnLink = document.createElement('a');
+        gongAnLink.href = "https://beian.mps.gov.cn/#/query/webSearch?code=42010302002809";
+        gongAnLink.rel = "noreferrer";
+        gongAnLink.target = "_blank";
+        gongAnLink.innerText = "鄂公网安备42010302002809号";
+        gongAnLink.style.color = 'inherit';
+        gongAnLink.style.textDecoration = 'none';
+
+        gongAnLink.onmouseover = () => { gongAnLink.style.textDecoration = 'underline'; };
+        gongAnLink.onmouseout = () => { gongAnLink.style.textDecoration = 'none'; };
+
+        gongAnDiv.appendChild(iconImg);
+        gongAnDiv.appendChild(gongAnLink);
+
+        footer.appendChild(gongAnDiv);
 
         // 直接追加到 body 的最末尾
         document.body.appendChild(footer);
