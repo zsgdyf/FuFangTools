@@ -15,6 +15,7 @@ jobs:
         with:
           host: ${{ secrets.ALIYUN_HOST }}
           username: ${{ secrets.ALIYUN_USER }}
+          port: 51208
           key: ${{ secrets.ALIYUN_KEY }}
           source: "."
           target: "/www/wwwroot/fufangtools"
@@ -29,6 +30,7 @@ jobs:
         with:
           host: ${{ secrets.ALIYUN_HOST }}
           username: ${{ secrets.ALIYUN_USER }}
+          port: 51208
           key: ${{ secrets.ALIYUN_KEY }}
           envs: ICP_NUMBER
           script: |
