@@ -1,13 +1,13 @@
 {
   "name": "fufangtools",
-  "version": "1.0.0",
-  "description": "一个独立的桌面工具箱应用",
-  "main": "server.js",
-  "bin": "server.js",
+  "version": "2.0.0",
+  "description": "浮方工具箱 - 基于 Vue 3 + Vite 的在线工具集合",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "build": "pkg .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server/server.js"
   },
   "pkg": {
     "targets": [
@@ -28,9 +28,13 @@
   "homepage": "https://github.com/zsgdyf/FuFangTools#readme",
   "dependencies": {
     "express": "^5.2.1",
-    "open": "^8.4.2"
+    "open": "^8.4.2",
+    "qrcode-generator": "^1.4.4"
   },
   "devDependencies": {
-    "pkg": "^5.8.1"
+    "@vitejs/plugin-vue": "^5.2.4",
+    "vite": "^6.3.5",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
   }
 }
