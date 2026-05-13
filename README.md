@@ -35,11 +35,27 @@
     ```bash
     npm install
     ```
-2.  **启动开发服务器**:
+2.  **启动本地开发环境 (Vite 客户端 + Express API)**:
+    您可以开启两个终端分别运行前端和后端：
     ```bash
-    # 启动后访问 http://localhost:3000
+    # 终端 1：启动 Express 后端 API (用于短链接等接口)
     npm start
+
+    # 终端 2：启动 Vite 前端热更新服务
+    npm run dev
     ```
+    启动后访问 Vite 提供的本地地址（通常是 `http://localhost:5173`）。
+
+3.  **构建生产版本**:
+    ```bash
+    npm run build
+    ```
+
+## 📚 项目文档
+
+*   **打包指南**: [PKG_BUILD.md](./docs/PKG_BUILD.md)
+*   **服务器部署指南**: [DEPLOY_ALIYUN.md](./docs/DEPLOY_ALIYUN.md)
+*   **Vue 3 重构总结**: [VUE_REFACTOR_SUMMARY.md](./docs/VUE_REFACTOR_SUMMARY.md)
 
 ## 📄 许可证
 
