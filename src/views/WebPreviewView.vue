@@ -644,41 +644,74 @@ const formatTweetDate = (timestamp) => {
 }
 
 @media (max-width: 600px) {
+  .input-section {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 25px;
+  }
+
   .inputs-row {
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 12px;
+    margin-top: 0;
   }
-  .btn-calc, .btn-clear {
-    flex: 1;
-    width: 100%;
-    height: 55px;
-    font-size: 1.05rem;
-  }
+
   .text-input {
+    flex: 0 0 100%;
     height: 55px !important;
     font-size: 1.05rem !important;
+    font-weight: 500 !important;
+    padding: 0 16px;
+    border-radius: 16px !important;
   }
+
+  .btn-calc, .btn-clear {
+    height: 55px;
+    border-radius: 16px;
+    font-size: 1.05rem;
+    min-width: 0;
+  }
+
+  .btn-calc {
+    flex: 2 1 0;
+    box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2);
+  }
+
+  .btn-clear {
+    flex: 1 1 0;
+  }
+
   .options-group {
-    flex-direction: column;
-    align-items: flex-start;
+    display: block;
+    margin-top: 20px;
+    padding-top: 20px;
     gap: 10px;
   }
+
+  .option-label {
+    display: block;
+    margin-bottom: 12px;
+  }
+
   .radio-group {
     flex-direction: column;
     gap: 10px;
     width: 100%;
   }
+
   .radio-item {
-    padding: 8px 12px;
+    min-height: 48px;
+    padding: 10px 12px;
     background: #f8fafc;
     border-radius: 8px;
     width: 100%;
+    font-size: 0.95rem;
   }
+
   .result-section {
     padding: 15px;
-  }
-  .input-section {
-    padding: 20px;
   }
 }
 </style>
