@@ -596,9 +596,32 @@ const formatTweetDate = (timestamp) => {
 @media (max-width: 600px) {
   .inputs-row {
     flex-direction: column;
+    gap: 12px;
   }
   .btn-calc {
     flex: 1;
+    width: 100%;
+    height: 50px;
+    font-size: 1.05rem;
+  }
+  .text-input {
+    height: 50px !important;
+    font-size: 1.05rem !important;
+  }
+  .options-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .radio-item {
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
     width: 100%;
   }
   .result-section {
