@@ -1,47 +1,55 @@
 # 打包为 Windows 桌面应用
 
-此应用可以通过 `pkg` 工具打包成一个独立的 Windows `.exe` 可执行文件。
+浮方工具箱支持通过 `pkg` 工具打包成一个独立的 Windows `.exe` 可执行文件。打包后可以在没有网络和 Node.js 环境的电脑上本地离线运行（除了短链接转换器等需要联网调用的功能外，其他工具均可离线使用）。
 
 ## 先决条件
 
-1.  **Node.js**: 确保你的系统上已安装 Node.js (推荐 LTS 版本)。
+1. **Node.js**: 确保你的系统上已安装 Node.js (推荐 v18+ LTS 版本)。
 
 ## 打包步骤
 
 ### 1. 安装项目依赖
 
-如果尚未安装，请在项目根目录运行：
+如果你刚刚拉取了项目代码，请先在项目根目录运行以下命令安装所需依赖（包括 Vue、Vite、Express 等）：
 ```bash
 npm install
 ```
-这会安装 `express`, `open` 以及打包工具 `pkg` 等依赖。
 
-### 2. 生成 `.exe` 文件
+### 2. 构建前端静态资源 (Vite)
 
-在项目根目录运行以下命令来生成可执行文件：
+首先，你需要将 Vue 前端代码构建为生产环境的纯静态文件。在项目根目录运行：
 ```bash
 npm run build
 ```
-*   此命令会在项目根目录创建一个 `dist` 文件夹，并在其中生成 `fufangtools.exe` 文件。
-*   **注意**: 如果构建失败并提示文件占用错误 (`EPERM`)，请确保你已经关闭了所有正在运行的 `fufangtools.exe` 进程，然后重试。
+这会使用 Vite 编译前端代码，并将结果（`index.html` 以及包含 CSS/JS 的 `assets/` 文件夹等）输出到项目根目录的 `dist/` 文件夹中。
 
-### 3. 复制静态资源文件
+*(注意：每次运行此命令都会清空并重新生成 `dist/` 文件夹。)*
 
-`.exe` 文件本身不包含前端的 HTML, CSS, JavaScript 等文件。你需要将它们复制到 `dist` 文件夹，与 `fufangtools.exe` 放在一起。
+### 3. 生成后端可执行文件 (pkg)
 
-在项目根目录运行以下命令完成复制（推荐使用 PowerShell）：
-
-```powershell
-# 复制 css, html, js 文件夹到 dist
-Copy-Item -Path css, html, js -Destination dist -Recurse -Force
-
-# 复制根目录文件到 dist
-Copy-Item -Path index.html, favicon.ico, favicon.svg, favicon-96x96.png -Destination dist -Force
+在保证第 2 步已经完成，且前端资源已经存在于 `dist/` 目录的情况下，接着运行 `pkg` 将 Express 后端打包为可执行文件：
+```bash
+npx pkg .
 ```
 
-### 4. 如何运行
+根据 `package.json` 中的配置，此命令会自动：
+1. 抓取 `server/server.js` 作为入口点。
+2. 将 Node 运行时与代码捆绑。
+3. 将生成的 `fufangtools.exe` 输出到 `dist/` 文件夹内。
 
-1.  进入 `dist` 文件夹。
-2.  双击 `fufangtools.exe`。
-3.  应用程序启动后，会弹出一个命令行窗口。
-4.  请手动或等待浏览器自动打开 `http://localhost:3000`。
+*(如果你全局安装了 pkg，也可以直接运行 `pkg .`)*
+
+### 4. 测试与分发
+
+此时你的 `dist/` 文件夹内应该包含：
+* `fufangtools.exe` (后端服务器可执行文件)
+* `index.html`, `favicon.ico` 等前端基础资源
+* `assets/` 文件夹 (前端编译后的 JS/CSS)
+
+**如何运行与分发：**
+1. 进入 `dist` 文件夹。
+2. 双击运行 `fufangtools.exe`，此时会弹出一个黑色的命令行窗口（请勿关闭）。
+3. 随后，程序会自动调用默认浏览器打开 `http://localhost:3000` 并展现工具箱界面。
+4. **如果要分发给他人**，请将整个 `dist` 文件夹打包成 `.zip` 压缩包发送即可。接收者解压后双击 `.exe` 即可使用，**无需安装任何环境**。
+
+> **提示**：如果在打包 `exe` 时遇到文件占用的权限报错 (`EPERM`)，请打开任务管理器，检查是否已经有未关闭的 `fufangtools.exe` 后台进程，将其结束任务后再重新打包。

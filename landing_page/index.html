@@ -174,37 +174,37 @@
             </header>
 
             <main class="tool-grid">
-                <!-- 链接指向实际的子域名应用 -->
+                <!-- 链接通过 JavaScript 动态指向 app. 子域名的对应路由 -->
 
-                <a href="https://tool.fufang.site/#/calc-24" class="tool-card">
+                <a href="#" onclick="return goToApp('/#/calc-24')" class="tool-card">
                     <div class="card-icon">🧮</div>
                     <div class="card-body">
                         <h2 class="card-title">24点计算器</h2>
                         <p class="card-desc">输入4个数字，自动寻找所有可能的24点解法。</p>
                     </div>
                 </a>
-                <a href="https://tool.fufang.site/#/shortlink" class="tool-card">
+                <a href="#" onclick="return goToApp('/#/shortlink')" class="tool-card">
                     <div class="card-icon">🔗</div>
                     <div class="card-body">
                         <h2 class="card-title">短链接转换器</h2>
                         <p class="card-desc">一键还原短链接背后的原始长地址。</p>
                     </div>
                 </a>
-                <a href="https://tool.fufang.site/#/bmi" class="tool-card">
+                <a href="#" onclick="return goToApp('/#/bmi')" class="tool-card">
                     <div class="card-icon">⚖️</div>
                     <div class="card-body">
                         <h2 class="card-title">BMI计算器</h2>
                         <p class="card-desc">根据身高和体重计算身体质量指数（BMI）。</p>
                     </div>
                 </a>
-                <a href="https://tool.fufang.site/#/qrcode" class="tool-card">
+                <a href="#" onclick="return goToApp('/#/qrcode')" class="tool-card">
                     <div class="card-icon">📱</div>
                     <div class="card-body">
                         <h2 class="card-title">二维码生成工具</h2>
                         <p class="card-desc">输入文本或网址，生成对应的二维码图片。</p>
                     </div>
                 </a>
-                <a href="https://tool.fufang.site/#/base64" class="tool-card">
+                <a href="#" onclick="return goToApp('/#/base64')" class="tool-card">
                     <div class="card-icon">🔠</div>
                     <div class="card-body">
                         <h2 class="card-title">Base64 转换</h2>
@@ -224,6 +224,30 @@
                    target="_blank">鄂公网安备42010302002809号</a>
             </div>
         </footer>
+
+        <script>
+            function goToApp(hashPath) {
+                // 如果是本地直接打开 html 文件或本地开发环境
+                if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    // 本地测试时无法通过子域名跳转，直接提示或回退（假设此时用户应该直接访问 Vue app 的 localhost:5173）
+                    alert("检测到本地环境，若要查看工具请直接运行 npm run dev 并访问该地址。");
+                    return false;
+                }
+
+                // 获取当前主机名，例如 fufang.site 或 www.fufang.site
+                let host = window.location.hostname;
+                
+                // 去除开头的 www.
+                host = host.replace(/^www\./, '');
+                
+                // 拼接目标应用子域名 (根据 DEPLOY_ALIYUN.md 指南，应用部署在 app. 子域名)
+                const targetUrl = window.location.protocol + '//app.' + host + hashPath;
+                
+                // 执行跳转
+                window.location.href = targetUrl;
+                return false;
+            }
+        </script>
     </body>
 
 </html>
