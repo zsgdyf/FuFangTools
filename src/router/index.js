@@ -59,9 +59,18 @@ const router = createRouter({
 })
 
 // 全局路由守卫：根据路由 meta 信息动态设置页面标题
-router.beforeEach((to) => {
+router.beforeEach((to, from, next) => {
+  // 1. 设置标题
   if (to.meta.title) {
     document.title = to.meta.title
+  }
+
+  // 2. 环境限制：阿里云域名隐藏「网页内容预览」
+  const hostname = window.location.hostname;
+  if (to.path === '/web-preview' && hostname.includes('tool.fufang.site')) {
+    next({ name: 'home' });
+  } else {
+    next();
   }
 })
 

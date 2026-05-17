@@ -29,12 +29,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 /**
  * 工具列表配置
  * 集中管理所有工具的元数据，便于后期添加新工具
- * 触发重新构建：2026-05-17
  */
-const tools = [
+const allTools = [
   {
     path: '/calc-24',
     icon: '🧮',
@@ -72,6 +73,18 @@ const tools = [
     desc: '输入网址即可预览X、YouTube、B站等网页内容。'
   }
 ]
+
+/**
+ * 根据域名过滤工具列表
+ * 阿里云域名 (tool.fufang.site) 隐藏「网页内容预览」
+ */
+const tools = computed(() => {
+  const hostname = window.location.hostname;
+  if (hostname.includes('tool.fufang.site')) {
+    return allTools.filter(tool => tool.path !== '/web-preview');
+  }
+  return allTools;
+});
 </script>
 
 <style scoped>
