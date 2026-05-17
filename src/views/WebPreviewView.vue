@@ -396,6 +396,7 @@ onBeforeUnmount(() => {
   padding: 16px;
   background: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  text-align: left;
 }
 
 .tweet-header {
