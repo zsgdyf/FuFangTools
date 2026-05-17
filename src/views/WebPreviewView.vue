@@ -16,7 +16,8 @@
             placeholder="请输入网址，例如: https://twitter.com/x/status/1791244078971260950" 
             @keyup.enter="handlePreview"
           />
-          <button class="btn-calc" @click="handlePreview" :disabled="!inputUrl">解析预览</button>
+          <button class="btn-calc" @click="handlePreview" :disabled="!inputUrl">解析预览 ✨</button>
+          <button class="btn-clear" @click="clearAll">清空 ↺</button>
         </div>
       </div>
       <div class="options-group">
@@ -237,6 +238,16 @@ const handlePreview = async () => {
   previewData.value = { src: validUrl };
 };
 
+// 清空输入和结果
+const clearAll = () => {
+  inputUrl.value = '';
+  previewType.value = null;
+  previewData.value = {};
+  loading.value = false;
+  error.value = null;
+  tweetData.value = null;
+};
+
 // 图片代理函数，使用 weserv.nl 绕过 pbs.twimg.com 的屏蔽
 const proxyImage = (url) => {
   if (!url) return '';
@@ -334,17 +345,56 @@ const formatTweetDate = (timestamp) => {
   text-align: left !important;
   font-weight: normal !important;
   padding: 0 20px;
-  height: 55px !important;
+  height: 60px !important;
   border-radius: 12px !important;
 }
 
 .btn-calc {
-  flex: 0 0 120px;
+  flex: 0 0 130px;
   padding: 0 !important;
-  height: 55px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-calc:hover {
+  background: var(--primary-hover);
+}
+
+.btn-calc:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-clear {
+  flex: 0 0 100px;
+  padding: 0 !important;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover {
+  background: #e2e8f0;
+  color: #334155;
 }
 
 .result-section {
@@ -598,14 +648,14 @@ const formatTweetDate = (timestamp) => {
     flex-direction: column;
     gap: 12px;
   }
-  .btn-calc {
+  .btn-calc, .btn-clear {
     flex: 1;
     width: 100%;
-    height: 50px;
+    height: 55px;
     font-size: 1.05rem;
   }
   .text-input {
-    height: 50px !important;
+    height: 55px !important;
     font-size: 1.05rem !important;
   }
   .options-group {
