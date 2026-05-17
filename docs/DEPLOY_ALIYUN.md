@@ -1,6 +1,6 @@
 # 阿里云轻量应用服务器部署指南
 
-本指南将帮助你将项目部署到阿里云服务器，并实现与 GitHub 的自动同步。
+本项目（浮方工具箱 v2.0，Vue 3 + Vite）支持通过 GitHub Actions 自动部署到阿里云服务器。本指南将帮助你完成服务器环境准备和 CI/CD 流水线配置。
 
 ## 1. 服务器环境准备
 
@@ -29,11 +29,11 @@ sudo npm install -g pm2
 
 ### 1.3 创建项目目录
 
-我们假设项目部署在 `/www/wwwroot/fufangtools`（这也是 GitHub Action 默认配置的路径）。
+项目默认部署路径为 `/www/wwwroot/fufangtools`，与 GitHub Actions 配置一致。
 
 ```bash
 sudo mkdir -p /www/wwwroot/fufangtools
-# 修改目录权限，确保你的 SSH 用户有权写入 (假设用户名为 root，如果是其他用户请修改)
+# 修改目录权限，确保你的 SSH 用户有权写入
 sudo chown -R $USER:$USER /www/wwwroot/fufangtools
 ```
 
@@ -47,31 +47,87 @@ sudo chown -R $USER:$USER /www/wwwroot/fufangtools
 |-------------|--------|
 | `ALIYUN_HOST` | 服务器的公网 IP 地址 |
 | `ALIYUN_USER` | SSH 登录用户名 (例如 `root`) |
-| `ALIYUN_KEY` | SSH 私钥内容 (即你的本地私钥文件 `id_rsa` 的内容，或者是专门生成的部署密钥) |
-| `ICP_NUMBER` | **你的真实备案号** (例如 `京ICP备XXXXXXXX号`) |
+| `ALIYUN_KEY` | SSH 私钥内容（你的本地私钥文件 `id_rsa` 的完整内容，或专门生成的部署密钥） |
+| `ICP_NUMBER` | **你的真实 ICP 备案号** (例如 `鄂ICP备XXXXXXXX号`) |
 
-**注意：** 
-1. `ICP_NUMBER` 是必须配置的，否则阿里云页面底部不会显示备案号。
-2. 确保服务器上的 `~/.ssh/authorized_keys` 文件中包含了对应的公钥，这样 GitHub 才能免密登录。
-
----
-
-## 3. 部署与验证
-
-当你推送到 GitHub 的 `main` 分支时，Actions 会自动执行：
-1. 将代码上传到服务器。
-2. 注入你在 Secrets 中配置的 `ICP_NUMBER`。
-3. 重启 Node.js 服务。
-
-### 验证逻辑
-- **Cloudflare Pages**: 由于它是纯静态环境，不运行 `server.js`，前端请求 `/api/app-config` 会失败（404），因此**不会显示**备案号。
-- **阿里云**: 运行 `server.js`，前端请求 `/api/app-config` 成功返回 `ICP_NUMBER`，因此**会显示**备案号。
+**注意：**
+1. `ICP_NUMBER` 必须配置，否则阿里云页面底部不会显示备案号。
+2. 确保服务器的 `~/.ssh/authorized_keys` 文件中包含对应的 SSH **公钥**，GitHub Actions 才能免密登录。
+3. 本项目 SSH 连接使用**非标准端口 `51208`**（已在 `deploy.yml` 中配置），请确保该端口在服务器防火墙（阿里云安全组）中已放行。
 
 ---
 
-## 4. (可选) Nginx 反向代理配置
+## 3. 自动部署流程说明
 
-为了使用 80/443 端口访问（而不是 3000 端口），建议配置 Nginx。
+当你向 GitHub 的 `main` 分支推送代码时，Actions 会自动按以下步骤执行：
+
+### 步骤一：构建 Vue 应用 (在 Actions Runner 上)
+```bash
+npm ci           # 安装所有依赖
+npm run build    # 使用 Vite 构建，产物输出到 dist/ 目录
+```
+
+### 步骤二：上传文件到服务器 (SCP)
+
+通过 SCP 将以下文件上传到服务器 `/www/wwwroot/fufangtools`：
+
+| 文件/目录 | 说明 |
+|-----------|------|
+| `dist/` | Vite 构建产物（前端静态资源） |
+| `server/` | Express 服务端代码 |
+| `landing_page/` | 主域名备案静态页 |
+| `functions/` | Cloudflare Pages Functions（上传但不在阿里云执行） |
+| `package.json` | 项目配置（用于服务端依赖安装） |
+| `package-lock.json` | 依赖锁定文件 |
+
+### 步骤三：服务端安装依赖并重启
+
+SSH 连接到服务器后执行：
+```bash
+cd /www/wwwroot/fufangtools
+npm install --production           # 仅安装服务端运行依赖（express 等）
+
+export NODE_ENV=production
+export ICP_NUMBER=$ICP_NUMBER      # 注入 GitHub Secrets 中配置的备案号
+
+# 使用 PM2 重启或首次启动服务
+if pm2 list | grep -q "fufangtools"; then
+  pm2 reload fufangtools --update-env   # 已运行时热重载并更新环境变量
+else
+  pm2 start server/server.js --name fufangtools  # 首次启动
+fi
+
+pm2 save                           # 保存进程列表，实现开机自启
+```
+
+### 备案号注入机制
+
+`ICP_NUMBER` 通过环境变量注入到 PM2 进程，Express 服务器通过 `/api/app-config` 接口返回给前端：
+- **阿里云**：`server.js` 正常运行，前端成功获取备案号并显示在页面底部。
+- **Cloudflare Pages**：纯静态环境，无 `server.js`，`/api/app-config` 返回 404，前端**不显示**备案号。
+
+---
+
+## 4. PM2 常用操作命令
+
+部署完成后，可通过以下命令手动管理服务：
+
+```bash
+pm2 list                           # 查看所有进程状态
+pm2 logs fufangtools               # 查看服务日志
+pm2 restart fufangtools            # 重启服务
+pm2 reload fufangtools --update-env  # 热重载（更新环境变量时使用）
+pm2 stop fufangtools               # 停止服务
+pm2 delete fufangtools             # 删除 PM2 进程记录
+pm2 startup                        # 生成开机自启脚本
+pm2 save                           # 保存当前进程列表
+```
+
+---
+
+## 5. (可选) Nginx 反向代理配置
+
+为了使用 80/443 端口访问（而不是直接暴露 3000 端口），建议配置 Nginx。
 
 1. 安装 Nginx: `sudo apt install nginx`
 2. 创建配置: `sudo nano /etc/nginx/sites-available/fufangtools`
@@ -99,28 +155,30 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-## 5. (进阶) 双域名分离配置
+---
+
+## 6. (进阶) 双域名分离配置
+
 如果你希望 **主域名** (如 `example.com`) 只展示一个带备案号的静态页，而将 **应用** 放在 **子域名** (如 `app.example.com`)，请参考以下方案：
 
-### 5.1 准备工作
-1. 项目根目录下已自动生成 `landing_page` 文件夹，其中包含简单的静态主页。
-2. **重要**：请手动修改 `landing_page/index.html`，将 `鄂ICP备XXXXXXXX号` 替换为你真实的 ICP 备案号。
+### 6.1 准备工作
+1. 项目根目录下的 `landing_page/` 文件夹包含主域名备案静态页，由 GitHub Actions 自动上传到服务器。
+2. **重要**：请手动修改 `landing_page/index.html`，将备案号占位符替换为你真实的 ICP 备案号。
 3. 确保你的域名 DNS 解析已设置：
    - `@` (主域名) -> 服务器 IP
-   - `app` (子域名) -> 服务器 IP (或你喜欢的其他前缀)
+   - `app` (子域名) -> 服务器 IP（或你喜欢的其他前缀）
 
-### 5.2 Nginx 配置 (修改 /etc/nginx/sites-available/fufangtools)
+### 6.2 Nginx 配置 (修改 /etc/nginx/sites-available/fufangtools)
 
 将配置修改为两个 server 块：
 
 ```nginx
-# 1. 主域名服务器块 (纯静态，展示备案页)
+# 1. 主域名服务器块（纯静态，展示备案页）
 server {
     listen 80;
     server_name example.com www.example.com; # 【修改】替换为你的主域名
 
     # 指向项目中的 landing_page 目录
-    # 注意：根据你的实际部署路径调整，假设项目在 /www/wwwroot/fufangtools
     root /www/wwwroot/fufangtools/landing_page;
     index index.html;
 
@@ -129,7 +187,7 @@ server {
     }
 }
 
-# 2. 子域名服务器块 (反向代理，指向 Node 应用)
+# 2. 子域名服务器块（反向代理，指向 Node 应用）
 server {
     listen 80;
     server_name app.example.com; # 【修改】替换为你的子域名
