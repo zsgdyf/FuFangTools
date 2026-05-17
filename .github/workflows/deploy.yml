@@ -22,6 +22,17 @@ jobs:
           npm ci
           npm run build
 
+      # 部署前清理旧的构建产物，防止文件残留或路径冲突
+      - name: Cleanup old dist via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ALIYUN_HOST }}
+          username: ${{ secrets.ALIYUN_USER }}
+          port: 51208
+          key: ${{ secrets.ALIYUN_KEY }}
+          script: |
+            rm -rf /www/wwwroot/fufangtools/dist
+
       # 上传构建产物和服务端文件到阿里云
       - name: Copy files via SCP
         uses: appleboy/scp-action@v0.1.7
