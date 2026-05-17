@@ -44,6 +44,12 @@ const routes = [
     name: 'base64',
     component: () => import('../views/Base64View.vue'),
     meta: { title: 'Base64 编码转换 - 浮方工具箱' }
+  },
+  {
+    path: '/web-preview',
+    name: 'webPreview',
+    component: () => import('../views/WebPreviewView.vue'),
+    meta: { title: '网页内容预览 - 浮方工具箱' }
   }
 ]
 

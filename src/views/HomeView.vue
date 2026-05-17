@@ -63,6 +63,12 @@ const tools = [
     icon: '🔠',
     title: 'Base64 转换',
     desc: '在线文本 Base64 编码与解码工具。'
+  },
+  {
+    path: '/web-preview',
+    icon: '🌍',
+    title: '网页内容预览',
+    desc: '输入网址即可预览X、YouTube、B站等网页内容。'
   }
 ]
 </script>
