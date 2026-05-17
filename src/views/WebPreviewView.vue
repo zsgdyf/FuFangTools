@@ -19,6 +19,19 @@
           <button class="btn-calc" @click="handlePreview" :disabled="!inputUrl">解析预览</button>
         </div>
       </div>
+      <div class="options-group">
+        <label class="option-label">Twitter 预览模式:</label>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" v-model="twitterMode" value="proxy" />
+            <span>代理渲染 (推荐海外/CF部署)</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" v-model="twitterMode" value="native" />
+            <span>官方 Widget (国内科学上网可用)</span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <div class="result-section" v-if="previewType">
@@ -48,52 +61,68 @@
 
         <!-- Twitter Preview -->
         <div v-else-if="previewType === 'twitter'" class="twitter-card-container">
-          <div v-if="loading" class="loading-placeholder">
-            <div class="spinner"></div>
-            <span>正在通过代理获取推文内容...</span>
-          </div>
-          <div v-else-if="error" class="error-placeholder">
-            <div class="warning-alert">
-              <span>❌</span> {{ error }}
+          <!-- Proxy Mode Content -->
+          <template v-if="twitterMode === 'proxy'">
+            <div v-if="loading" class="loading-placeholder">
+              <div class="spinner"></div>
+              <span>正在通过代理获取推文内容...</span>
             </div>
-          </div>
-          <div v-else-if="tweetData" class="tweet-card">
-            <div class="tweet-header">
-              <img :src="proxyImage(tweetData.author.avatar_url)" class="tweet-avatar" alt="avatar" />
-              <div class="tweet-author-info">
-                <div class="tweet-author-name">{{ tweetData.author.name }}</div>
-                <div class="tweet-author-handle">@{{ tweetData.author.screen_name }}</div>
+            <div v-else-if="error" class="error-placeholder">
+              <div class="warning-alert">
+                <span>❌</span> {{ error }}
               </div>
-              <a :href="tweetData.url" target="_blank" class="tweet-logo">
-                <svg viewBox="0 0 24 24" aria-hidden="true" class="twitter-icon"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g></svg>
-              </a>
+              <div class="info-alert">
+                💡 提示：如果此项目部署在国内服务器（如阿里云），代理方案可能无法访问 Twitter API。请尝试切换到「官方 Widget」模式。
+              </div>
             </div>
-            <div class="tweet-content" v-html="formatTweetText(tweetData.text)"></div>
-            
-            <div v-if="tweetData.media && tweetData.media.photos && tweetData.media.photos.length > 0" class="tweet-media">
-              <div :class="['media-grid', `grid-${Math.min(tweetData.media.photos.length, 4)}`]">
-                <div v-for="(photo, index) in tweetData.media.photos" :key="index" class="media-item">
-                  <img :src="proxyImage(photo.url)" class="tweet-image" loading="lazy" />
+            <div v-else-if="tweetData" class="tweet-card">
+              <div class="tweet-header">
+                <img :src="proxyImage(tweetData.author.avatar_url)" class="tweet-avatar" alt="avatar" />
+                <div class="tweet-author-info">
+                  <div class="tweet-author-name">{{ tweetData.author.name }}</div>
+                  <div class="tweet-author-handle">@{{ tweetData.author.screen_name }}</div>
+                </div>
+                <a :href="tweetData.url" target="_blank" class="tweet-logo">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" class="twitter-icon"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g></svg>
+                </a>
+              </div>
+              <div class="tweet-content" v-html="formatTweetText(tweetData.text)"></div>
+              
+              <div v-if="tweetData.media && tweetData.media.photos && tweetData.media.photos.length > 0" class="tweet-media">
+                <div :class="['media-grid', `grid-${Math.min(tweetData.media.photos.length, 4)}`]">
+                  <div v-for="(photo, index) in tweetData.media.photos" :key="index" class="media-item">
+                    <img :src="proxyImage(photo.url)" class="tweet-image" loading="lazy" />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div v-if="tweetData.media && tweetData.media.videos && tweetData.media.videos.length > 0" class="tweet-video">
-              <video controls :poster="proxyImage(tweetData.media.videos[0].thumbnail_url)" class="tweet-video-player">
-                <source :src="tweetData.media.videos[0].url" type="video/mp4">
-                您的浏览器不支持视频播放。
-              </video>
-            </div>
-
-            <div class="tweet-footer">
-              <div class="tweet-stats">
-                <span>💬 {{ tweetData.replies }}</span>
-                <span>🔄 {{ tweetData.retweets }}</span>
-                <span>❤️ {{ tweetData.likes }}</span>
+              <div v-if="tweetData.media && tweetData.media.videos && tweetData.media.videos.length > 0" class="tweet-video">
+                <video controls :poster="proxyImage(tweetData.media.videos[0].thumbnail_url)" class="tweet-video-player">
+                  <source :src="tweetData.media.videos[0].url" type="video/mp4">
+                  您的浏览器不支持视频播放。
+                </video>
               </div>
-              <div class="tweet-date">{{ tweetData.created_at }}</div>
+
+              <div class="tweet-footer">
+                <div class="tweet-stats">
+                  <span>💬 {{ tweetData.replies }}</span>
+                  <span>🔄 {{ tweetData.retweets }}</span>
+                  <span>❤️ {{ tweetData.likes }}</span>
+                </div>
+                <div class="tweet-date">{{ tweetData.created_at }}</div>
+              </div>
             </div>
-          </div>
+          </template>
+
+          <!-- Native Mode Content -->
+          <template v-else>
+            <div class="warning-alert native-warning">
+              <span>⚠️</span> 正在使用官方 Widget 预览。若无法显示，请确保已开启科学上网环境。
+            </div>
+            <div class="twitter-embed" ref="twitterContainer">
+              <!-- 这里由 widgets.js 动态生成内容 -->
+            </div>
+          </template>
         </div>
 
         <!-- Generic Iframe Preview -->
@@ -122,6 +151,7 @@ const twitterContainer = ref(null);
 const loading = ref(false);
 const error = ref(null);
 const tweetData = ref(null);
+const twitterMode = ref('proxy'); // 'proxy' 或 'native'
 
 // 解析网址并生成预览视图
 const handlePreview = async () => {
@@ -157,18 +187,43 @@ const handlePreview = async () => {
   const twitterRegex = /(?:twitter\.com|x\.com)\/\w+\/status\/\d+/i;
   if (twitterRegex.test(url)) {
     previewType.value = 'twitter';
-    loading.value = true;
     
-    try {
-      const response = await fetch(`/api/twitter-info?url=${encodeURIComponent(url)}`);
-      if (!response.ok) throw new Error('无法获取推文信息');
-      const data = await response.json();
-      if (data.code !== 200) throw new Error(data.message || '获取推文失败');
-      tweetData.value = data.tweet;
-    } catch (err) {
-      error.value = err.message;
-    } finally {
-      loading.value = false;
+    if (twitterMode.value === 'proxy') {
+      loading.value = true;
+      try {
+        const response = await fetch(`/api/twitter-info?url=${encodeURIComponent(url)}`);
+        if (!response.ok) throw new Error('无法获取推文信息');
+        const data = await response.json();
+        if (data.code !== 200) throw new Error(data.message || '获取推文失败');
+        tweetData.value = data.tweet;
+      } catch (err) {
+        error.value = err.message;
+      } finally {
+        loading.value = false;
+      }
+    } else {
+      // 官方 Widget 模式
+      nextTick(() => {
+        if (twitterContainer.value) {
+           twitterContainer.value.innerHTML = `<blockquote class="twitter-tweet" data-theme="light"><a href="${url}"></a></blockquote>`;
+        }
+        
+        if (!window.twttr) {
+          const script = document.createElement('script');
+          script.id = 'twitter-wjs';
+          script.src = "https://platform.twitter.com/widgets.js";
+          script.async = true;
+          script.charset = "utf-8";
+          script.onload = () => {
+            if (window.twttr && window.twttr.widgets) {
+              window.twttr.widgets.load(twitterContainer.value);
+            }
+          };
+          document.head.appendChild(script);
+        } else {
+          window.twttr.widgets.load(twitterContainer.value);
+        }
+      });
     }
     return;
   }
@@ -213,6 +268,39 @@ onBeforeUnmount(() => {
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
   margin-bottom: 24px;
+}
+
+.options-group {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.option-label {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.radio-item input {
+  cursor: pointer;
 }
 
 .inputs-row {
@@ -449,6 +537,23 @@ onBeforeUnmount(() => {
 
 .error-placeholder {
   width: 100%;
+}
+
+.info-alert {
+  background-color: #f0f9ff;
+  color: #0369a1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #bae6fd;
+}
+
+.native-warning {
+  margin-bottom: 15px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .generic-embed {
