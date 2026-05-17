@@ -109,7 +109,7 @@
                   <span>🔄 {{ tweetData.retweets }}</span>
                   <span>❤️ {{ tweetData.likes }}</span>
                 </div>
-                <div class="tweet-date">{{ tweetData.created_at }}</div>
+                <div class="tweet-date">{{ formatTweetDate(tweetData.created_timestamp) }}</div>
               </div>
             </div>
           </template>
@@ -256,9 +256,28 @@ const formatTweetText = (text) => {
   return formatted;
 };
 
-onBeforeUnmount(() => {
-  // 不强制移除 twitter js 避免其它页面或重新进入时报错
-});
+// 格式化推文日期，转换为本地时区和指定格式
+const formatTweetDate = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp * 1000); // FxTwitter 返回的是秒级时间戳
+  
+  const timeFormatter = new Intl.DateTimeFormat('zh-CN', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+  
+  const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const timeStr = timeFormatter.format(date).replace(' ', ''); // 移除空格，如 "上午 9:06" -> "上午9:06"
+  const dateStr = dateFormatter.format(date);
+  
+  return `${timeStr} · ${dateStr}`;
+};
 </script>
 
 <style scoped>
