@@ -31,7 +31,7 @@ jobs:
           port: 51208
           key: ${{ secrets.ALIYUN_KEY }}
           # 仅上传生产环境所需的文件
-          source: "dist/,server/,functions/,package.json,package-lock.json"
+          source: "dist/,server/,landing_page/,functions/,package.json,package-lock.json"
           target: "/www/wwwroot/fufangtools"
           rm: false
 
