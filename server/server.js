@@ -26,11 +26,15 @@ app.use(express.static(publicPath))
 /**
  * 获取应用配置
  * 前端通过此接口判断是否显示备案号等信息
+ * 逻辑：如果是 tool.fufang.site 域名，则不返回备案号（实现子域名隐藏）
  * ICP_NUMBER 环境变量由阿里云部署流程注入
  */
 app.get('/api/app-config', (req, res) => {
+  const host = req.get('host') || ''
+  const isToolSubdomain = host.includes('tool.fufang.site')
+
   res.json({
-    icpNumber: process.env.ICP_NUMBER || ''
+    icpNumber: isToolSubdomain ? '' : (process.env.ICP_NUMBER || '')
   })
 })
 
