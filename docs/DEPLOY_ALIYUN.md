@@ -67,7 +67,12 @@ npm ci           # 安装所有依赖
 npm run build    # 使用 Vite 构建，产物输出到 dist/ 目录
 ```
 
-### 步骤二：上传文件到服务器 (SCP)
+### 步骤二：部署前置清理 (重要)
+由于本项目包含大量静态资源，为了防止旧版文件残留干扰新版应用（特别是 `index.html` 缓存问题），部署流中增加了清理步骤：
+- **操作**：通过 SSH 在目标服务器执行 `rm -rf /www/wwwroot/fufangtools/dist`。
+- **效果**：确保每次上传的 `dist/` 目录都是纯净的最新版本。
+
+### 步骤三：上传文件到服务器 (SCP)
 
 通过 SCP 将以下文件上传到服务器 `/www/wwwroot/fufangtools`：
 
