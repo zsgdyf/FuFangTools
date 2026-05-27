@@ -75,6 +75,47 @@ app.get('/api/expand', async (req, res) => {
   }
 })
 
+/**
+ * 获取 Twitter/X 帖子信息 (与 Cloudflare Functions 同步)
+ * 通过 api.fxtwitter.com 代理获取结构化数据
+ */
+app.get('/api/twitter-info', async (req, res) => {
+  const tweetUrl = req.query.url
+
+  if (!tweetUrl) {
+    return res.status(400).json({ error: '缺少 url 参数' })
+  }
+
+  // 提取 Tweet ID
+  const tweetIdMatch = tweetUrl.match(/\/status\/(\d+)/)
+  if (!tweetIdMatch) {
+    return res.status(400).json({ error: '无效的 Twitter 链接' })
+  }
+
+  const tweetId = tweetIdMatch[1]
+  const apiUrl = `https://api.fxtwitter.com/status/${tweetId}`
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`FxTwitter API 返回错误: ${response.status}`)
+    }
+
+    const data = await response.json()
+    
+    res.setHeader('Cache-Control', 'public, max-age=3600') // 缓存 1 小时
+    res.json(data)
+  } catch (error) {
+    res.status(500).json({ error: '获取推文信息失败', details: error.message })
+  }
+})
+
 // --- 启动服务器 ---
 app.listen(port, () => {
   const url = `http://localhost:${port}`
