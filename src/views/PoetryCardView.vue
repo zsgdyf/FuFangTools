@@ -82,14 +82,12 @@
                 <button 
                   :class="['toggle-btn', { active: layout === 'vertical' }]" 
                   @click="layout = 'vertical'"
-                  :disabled="cardStyleMode === 'stationery'"
                 >
                   竖排
                 </button>
                 <button 
                   :class="['toggle-btn', { active: layout === 'horizontal' }]" 
                   @click="layout = 'horizontal'"
-                  :disabled="cardStyleMode === 'stationery'"
                 >
                   横排
                 </button>
@@ -239,8 +237,8 @@
               </div>
             </div>
 
-            <!-- 2. 中式红线信笺模式 (Flex 布局，可靠的从右到左列排布) -->
-            <div v-else class="layout-stationery">
+            <!-- 2. 中式红线信笺模式 (Flex 布局) -->
+            <div v-else :class="['layout-stationery', `is-${layout}`]">
               <!-- 最右侧列：诗名 -->
               <div class="stationery-col col-title">
                 {{ poetry.title || '无题' }}
@@ -391,7 +389,6 @@ const textTheme = ref('white')   // white: 白色, dark: 黛黑色
 function setTemplateMode(mode) {
   cardStyleMode.value = mode
   if (mode === 'stationery') {
-    layout.value = 'vertical'
     textTheme.value = 'dark'
   }
 }
@@ -550,20 +547,154 @@ function exportImage() {
     
     // 统一设置绘制参数
     ctx.textAlign = 'center'
-    ctx.textBaseline = 'top'
+    
+    if (layout.value === 'horizontal') {
+      // ===== 横排红线信笺 =====
+      ctx.textBaseline = 'middle'
+      const usableHeight = height - innerOffset * 2
+      const rowHeight = usableHeight / totalCols // horizontal uses rows
+      
+      // 绘制水平分隔实色红线 (共 totalCols - 1 条)
+      ctx.strokeStyle = redColor
+      ctx.lineWidth = 1 * scale
+      for (let i = 1; i < totalCols; i++) {
+        const lineY = innerOffset + i * rowHeight
+        ctx.beginPath()
+        ctx.moveTo(innerOffset, lineY)
+        ctx.lineTo(width - innerOffset, lineY)
+        ctx.stroke()
+      }
 
-    // 绘制垂直分隔实色红线 (共 totalCols - 1 条)
-    ctx.strokeStyle = redColor
-    ctx.lineWidth = 1 * scale
-    for (let i = 1; i < totalCols; i++) {
-      const lineX = width - innerOffset - i * colWidth
-      ctx.beginPath()
-      ctx.moveTo(lineX, innerOffset)
-      ctx.lineTo(lineX, height - innerOffset)
-      ctx.stroke()
-    }
+      // ---- 1. 第一行：诗名 ----
+      const titleRowY = innerOffset + 0.5 * rowHeight
+      const titleText = poetry.title || '无题'
+      const titleFontSize = 24 * scale
+      const titleSpacing = 6 * scale
+      ctx.font = `bold ${titleFontSize}px ${baseFontFamily}`
+      ctx.fillStyle = '#1a1a1a'
+      
+      const titleChars = titleText.split('')
+      let titleTotalWidth = titleChars.length * titleFontSize + (titleChars.length - 1) * titleSpacing
+      let titleStartX = (width - titleTotalWidth) / 2
+      
+      titleChars.forEach((char, idx) => {
+        ctx.fillText(char, titleStartX + idx * (titleFontSize + titleSpacing) + titleFontSize / 2, titleRowY)
+      })
 
-    // 绘制内容 (从右往左流，列索引 0 到 totalCols - 1)
+      // ---- 2. 中间行：正文的每一行 ----
+      const bodyFontSize = fontSize.value * scale
+      const bodySpacing = letterSpacing.value * scale
+      ctx.font = `${bodyFontSize}px ${baseFontFamily}`
+      ctx.fillStyle = '#2c3e50'
+      
+      lines.forEach((line, lineIdx) => {
+        const rowY = innerOffset + (1 + lineIdx + 0.5) * rowHeight
+        const chars = line.split('')
+        
+        const lineTotalWidth = chars.length * bodyFontSize + (chars.length - 1) * bodySpacing
+        const lineStartX = (width - lineTotalWidth) / 2
+        
+        chars.forEach((char, charIdx) => {
+          ctx.fillText(char, lineStartX + charIdx * (bodyFontSize + bodySpacing) + bodyFontSize / 2, rowY)
+        })
+      })
+
+      // ---- 3. 最后一行：朝代红框 + 作者名字 + 底部红印章 ----
+      const authorRowY = innerOffset + (totalCols - 0.5) * rowHeight
+      
+      const dynastyText = poetry.dynasty || ''
+      const authorText = poetry.author || ''
+      
+      // 作者名字尺寸
+      const authFontSize = 14 * scale
+      const authSpacing = 4 * scale
+      const authorChars = authorText.split('')
+      const authTotalWidth = authorText ? (authorChars.length * authFontSize + (authorChars.length - 1) * authSpacing) : 0
+      
+      // 朝代框尺寸
+      const dynFontSize = 10 * scale
+      const dynPaddingX = 5 * scale
+      const dynPaddingY = 3 * scale
+      const dynastyChars = dynastyText.split('')
+      const dynBoxH = dynFontSize + dynPaddingY * 2
+      const dynBoxW = dynastyText ? (dynastyChars.length * dynFontSize + dynPaddingX * 2) : 0
+
+      // 印章尺寸
+      const stampW = 34 * scale
+      const stampH = 24 * scale
+      
+      const gap = 12 * scale
+      let currentRightX = width - innerOffset - 16 * scale
+      
+      // 1. 绘制印章
+      if (showStamp.value) {
+        const stampX = currentRightX - stampW
+        const stampY = authorRowY - stampH / 2
+        
+        ctx.fillStyle = redColor
+        ctx.fillRect(stampX, stampY, stampW, stampH)
+        
+        ctx.fillStyle = '#ffffff'
+        const stampTextSize = 9 * scale
+        ctx.font = `bold ${stampTextSize}px "STKaiti", "KaiTi", serif`
+        ctx.textBaseline = 'middle'
+        ctx.fillText('浮', stampX + stampW * 0.3, authorRowY)
+        ctx.fillText('方', stampX + stampW * 0.7, authorRowY)
+        
+        currentRightX = stampX - gap
+      }
+
+      // 2. 绘制作者
+      if (authorText) {
+        ctx.textBaseline = 'middle'
+        ctx.font = `${authFontSize}px ${baseFontFamily}`
+        ctx.fillStyle = '#334155'
+        
+        const authorStartX = currentRightX - authTotalWidth
+        authorChars.forEach((char, idx) => {
+          ctx.fillText(char, authorStartX + idx * (authFontSize + authSpacing) + authFontSize / 2, authorRowY)
+        })
+        
+        currentRightX = authorStartX - gap
+      }
+
+      // 3. 绘制朝代红框
+      if (dynastyText) {
+        const dynBoxX = currentRightX - dynBoxW
+        const dynBoxY = authorRowY - dynBoxH / 2
+        
+        ctx.strokeStyle = redColor
+        ctx.lineWidth = 1 * scale
+        ctx.strokeRect(dynBoxX, dynBoxY, dynBoxW, dynBoxH)
+        
+        ctx.textBaseline = 'middle'
+        ctx.font = `bold ${dynFontSize}px ${baseFontFamily}`
+        ctx.fillStyle = redColor
+        
+        // Horizontal text for dynasty
+        const dynCharsWidth = dynastyChars.length * dynFontSize
+        let dynStartX = dynBoxX + (dynBoxW - dynCharsWidth) / 2
+        dynastyChars.forEach((char, idx) => {
+          ctx.fillText(char, dynStartX + idx * dynFontSize + dynFontSize / 2, authorRowY)
+        })
+      }
+    } else {
+      // ===== 竖排红线信笺 =====
+      ctx.textBaseline = 'top'
+
+      // 绘制垂直分隔实色红线 (共 totalCols - 1 条)
+      ctx.strokeStyle = redColor
+      ctx.lineWidth = 1 * scale
+      for (let i = 1; i < totalCols; i++) {
+        const lineX = width - innerOffset - i * colWidth
+        ctx.beginPath()
+        ctx.moveTo(lineX, innerOffset)
+        ctx.lineTo(lineX, height - innerOffset)
+        ctx.stroke()
+      }
+
+      // 绘制内容 (从右往左流，列索引 0 到 totalCols - 1)
+
     
     // ---- 1. 最右侧列：诗名（黑色，与参考图一致） ----
     const titleColX = width - innerOffset - 0.5 * colWidth
