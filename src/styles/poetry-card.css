@@ -1,0 +1,473 @@
+/* ==========================================================================
+   古诗词壁纸生成器工具特定样式 (poetry-card.css)
+   ========================================================================== */
+
+/* 宽屏容器布局 */
+.poetry-card-wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+/* 左侧：控制面板 */
+.control-panel {
+    flex: 1.2;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* 自定义滚动条 */
+.control-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.control-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.control-panel::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+.control-panel::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 控制面板分组 */
+.panel-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(226, 232, 240, 0.8);
+}
+.panel-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.panel-section h3 {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+/* 双列配置项 */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+/* 控制项小组件 */
+.config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.config-item label {
+    font-size: 0.85rem;
+    color: #64748b;
+    padding-left: 2px;
+}
+
+/* 按钮切换组 */
+.toggle-buttons {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+}
+.toggle-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.toggle-btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 渐变色色盘 */
+.gradient-palette {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.palette-item {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+.palette-item:hover {
+    transform: scale(1.08);
+}
+.palette-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+    transform: scale(1.04);
+}
+
+/* 调色器与纯色控制 */
+.color-picker-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.color-picker {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+}
+.color-picker::-webkit-color-swatch {
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+
+/* 常用文字调整滑块 */
+.range-slider {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+/* 按钮动作 */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+.btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+.btn-secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* 右侧：预览区 */
+.preview-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 20px;
+    perspective: 1200px; /* 3D 视差视点 */
+    padding: 10px 0;
+}
+
+/* 3D 变换的包装容器 */
+.card-3d-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+/* 卡片实体 */
+.poetry-card {
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 
+                inset 0 0 80px rgba(0, 0, 0, 0.12); /* 宣纸边缘暗角 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
+    transform-style: preserve-3d;
+    background-size: cover;
+    background-position: center;
+}
+
+/* 卡片比例尺寸 */
+.size-card {
+    width: 360px;
+    height: 480px;
+}
+.size-wallpaper {
+    width: 320px;
+    height: 569px; /* 9:16 高清壁纸 */
+}
+
+/* 古典宣纸纹路叠加层 */
+.poetry-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* 采用正交微弱条纹模拟宣纸“帘纹”纤维质感 */
+    background-image: 
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(-45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 3px);
+    background-size: 20px 20px, 20px 20px, auto, auto;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.85;
+}
+
+/* 中式古典精致内边框 */
+.poetry-card::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+    z-index: 2;
+    border-radius: 12px;
+}
+
+/* 暗色主题下的内边框与暗纹 */
+.text-white.poetry-card::after {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+.text-white.poetry-card {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 
+                inset 0 0 100px rgba(0, 0, 0, 0.3); /* 暗色宣纸质感 */
+}
+
+/* 反光高光层（用于3D视差） */
+.card-reflection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--reflect-x, 50%) var(--reflect-y, 50%), 
+                                rgba(255, 255, 255, 0.2) 0%, 
+                                rgba(255, 255, 255, 0) 65%);
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: overlay;
+}
+
+/* 卡片内部结构 */
+.card-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    transform: translateZ(30px); /* 3D 文字悬浮效果 */
+}
+
+/* 横向排版 */
+.layout-horizontal {
+    flex-direction: column;
+    text-align: center;
+}
+.layout-horizontal .card-title-section {
+    margin-bottom: 20px;
+}
+.layout-horizontal .card-poetry-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.layout-horizontal .card-poetry-author {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+.layout-horizontal .card-poetry-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* 竖向排版（古典特色，自右向左） */
+.layout-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    height: 100%;
+    display: flex;
+    flex-direction: row; /* 在 vertical-rl 下代表列的排序 */
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+.layout-vertical .card-title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
+/* 暗色背景下的边框 */
+.text-white .layout-vertical .card-title-section {
+    border-left-color: rgba(255, 255, 255, 0.25);
+}
+.layout-vertical .card-poetry-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+}
+.layout-vertical .card-poetry-author {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    letter-spacing: 2px;
+    margin-top: 10px;
+}
+.layout-vertical .card-poetry-body {
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    line-height: 2.2;
+    white-space: pre-line;
+    max-height: 85%;
+}
+
+/* 经典红印章 */
+.card-stamp {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #b91c1c;
+    color: #b91c1c;
+    font-family: 'STKaiti', 'KaiTi', serif;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border-radius: 4px;
+    transform: rotate(-10deg) translateZ(15px);
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.15);
+    user-select: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.layout-vertical .card-stamp {
+    /* 竖排时印章放于左下方更佳 */
+    bottom: 30px;
+    left: 30px;
+    right: auto;
+}
+
+/* 字体选择配置 */
+.font-serif {
+    font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+}
+.font-kaiti {
+    font-family: "STKaiti", "KaiTi", "DFKai-SB", serif;
+}
+.font-sans {
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* 暗色主题文字 */
+.text-white {
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.text-white .card-stamp {
+    border-color: #fca5a5;
+    color: #fca5a5;
+}
+
+/* 亮色主题文字 */
+.text-dark {
+    color: #1e293b;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+/* 提示信息 */
+.preview-tip {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 响应式调整 */
+@media (max-width: 900px) {
+    .poetry-card-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .control-panel {
+        width: 100%;
+        max-height: none;
+    }
+    
+    .preview-panel {
+        width: 100%;
+        position: static;
+    }
+}
+
+@media (max-width: 480px) {
+    .poetry-card {
+        padding: 25px;
+    }
+    .size-card {
+        width: 100%;
+        max-width: 320px;
+        height: 420px;
+    }
+    .size-wallpaper {
+        width: 100%;
+        max-width: 290px;
+        height: 515px;
+    }
+}

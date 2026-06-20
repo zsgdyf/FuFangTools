@@ -50,6 +50,12 @@ const routes = [
     name: 'webPreview',
     component: () => import('../views/WebPreviewView.vue'),
     meta: { title: '网页内容预览 - 浮方工具箱' }
+  },
+  {
+    path: '/poetry-card',
+    name: 'poetryCard',
+    component: () => import('../views/PoetryCardView.vue'),
+    meta: { title: '古诗词卡片生成器 - 浮方工具箱' }
   }
 ]
 

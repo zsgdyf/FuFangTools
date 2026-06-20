@@ -71,6 +71,12 @@ const allTools = [
     icon: '🌍',
     title: '网页内容预览',
     desc: '输入网址即可预览X、YouTube、B站等网页内容。'
+  },
+  {
+    path: '/poetry-card',
+    icon: '🎨',
+    title: '古诗词卡片生成器',
+    desc: '一键生成设计精美的古诗词卡片。'
   }
 ]
 
