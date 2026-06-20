@@ -811,6 +811,7 @@ function exportImage() {
         ctx.fillText(char, authorColX, dynBoxY + dynPaddingY + idx * (dynFontSize + dynSpacing))
       })
     }
+    }
   } else {
     // ==========================================
     // 🎨 原本的极简国风模式 (横竖排版)
@@ -961,26 +962,35 @@ function exportImage() {
       }
     }
 
-    // 7. 原本的极简国风印章印记
+    // 7. 原本的极简国风印章印记（带旋转，与 CSS 预览一致）
     if (showStamp.value) {
       ctx.shadowColor = 'transparent'
-      
+
       const stampSize = 28 * scale
       const stampX = layout.value === 'vertical' ? padding : width - padding - stampSize
       const stampY = height - padding - stampSize
-      
+      const stampCenterX = stampX + stampSize / 2
+      const stampCenterY = stampY + stampSize / 2
+
+      ctx.save()
+      ctx.translate(stampCenterX, stampCenterY)
+      ctx.rotate(-10 * Math.PI / 180) // CSS preview uses rotate(-10deg)
+      ctx.translate(-stampCenterX, -stampCenterY)
+
       ctx.strokeStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
       ctx.lineWidth = 2 * scale
       ctx.strokeRect(stampX, stampY, stampSize, stampSize)
-      
+
       ctx.fillStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
       const stampFontSize = 10 * scale
       ctx.font = `bold ${stampFontSize}px "STKaiti", "KaiTi", serif`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      
+
       ctx.fillText('浮', stampX + stampSize * 0.5, stampY + stampSize * 0.3)
       ctx.fillText('方', stampX + stampSize * 0.5, stampY + stampSize * 0.7)
+
+      ctx.restore()
     }
   }
 
