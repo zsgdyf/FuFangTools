@@ -684,6 +684,24 @@ function exportImage() {
     // ==========================================
     // 🎨 原本的极简国风模式 (横竖排版)
     // ==========================================
+    const isWhiteText = textTheme.value === 'white'
+
+    // 绘制渐变背景
+    const gradient = ctx.createLinearGradient(0, 0, width, height)
+    if (isCustomColorActive.value) {
+      gradient.addColorStop(0, customColor1.value)
+      gradient.addColorStop(1, customColor2.value)
+    } else {
+      const preset = PRESET_GRADIENTS[activeGradientIndex.value]
+      gradient.addColorStop(0, preset.colors[0])
+      gradient.addColorStop(1, preset.colors[1])
+    }
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, width, height)
+
+    // 统一设置文字颜色
+    ctx.fillStyle = isWhiteText ? '#ffffff' : '#1e293b'
+
     if (layout.value === 'horizontal') {
       // --- 横向排版绘制 ---
       ctx.textAlign = 'center'
