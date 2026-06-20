@@ -506,12 +506,12 @@
 }
 
 /* 竖排信笺 */
-.layout-stationery.layout-vertical {
+.layout-stationery.is-vertical {
     flex-direction: row-reverse; /* 从右往左排列各列 */
 }
 
 /* 横排信笺 */
-.layout-stationery.layout-horizontal {
+.layout-stationery.is-horizontal {
     flex-direction: column; /* 从上往下排列各行 */
 }
 
@@ -525,23 +525,23 @@
     min-height: 0;
 }
 
-.layout-stationery.layout-vertical .stationery-col {
+.layout-stationery.is-vertical .stationery-col {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     padding: 16px 0;
 }
 
-.layout-stationery.layout-horizontal .stationery-col {
+.layout-stationery.is-horizontal .stationery-col {
     writing-mode: horizontal-tb;
     padding: 0 16px;
 }
 
 /* 列间/行间红色分隔线 */
-.layout-stationery.layout-vertical .stationery-col + .stationery-col {
+.layout-stationery.is-vertical .stationery-col + .stationery-col {
     border-right: 1px solid #96201e;
 }
 
-.layout-stationery.layout-horizontal .stationery-col + .stationery-col {
+.layout-stationery.is-horizontal .stationery-col + .stationery-col {
     border-top: 1px solid #96201e;
 }
 
@@ -564,12 +564,12 @@
 }
 
 /* 最左侧/最后一行 作者朝代列 */
-.layout-stationery.layout-vertical .col-author {
+.layout-stationery.is-vertical .col-author {
     padding: 12px 0;
     writing-mode: horizontal-tb; /* 作者列用普通水平流 */
 }
 
-.layout-stationery.layout-horizontal .col-author {
+.layout-stationery.is-horizontal .col-author {
     padding: 0 12px;
 }
 
@@ -582,12 +582,12 @@
     width: 100%;
 }
 
-.layout-stationery.layout-vertical .author-cell-wrapper {
+.layout-stationery.is-vertical .author-cell-wrapper {
     flex-direction: column;
     justify-content: flex-end; /* 朝代、作者、印章集中在底部 */
 }
 
-.layout-stationery.layout-horizontal .author-cell-wrapper {
+.layout-stationery.is-horizontal .author-cell-wrapper {
     flex-direction: row;
     justify-content: flex-end; /* 集中在右侧 */
 }
@@ -603,10 +603,10 @@
     border-radius: 2px;
     font-weight: bold;
 }
-.layout-stationery.layout-vertical .stationery-dynasty {
+.layout-stationery.is-vertical .stationery-dynasty {
     width: 1.5em; /* 宽度限制为一个字宽，在水平流下使其垂直堆叠换行 */
 }
-.layout-stationery.layout-horizontal .stationery-dynasty {
+.layout-stationery.is-horizontal .stationery-dynasty {
     padding: 2px 4px; /* 横向排列稍微拉宽 */
 }
 
@@ -620,7 +620,7 @@
     text-align: center;
     font-family: "STKaiti", "KaiTi", serif;
 }
-.layout-stationery.layout-vertical .stationery-author-name {
+.layout-stationery.is-vertical .stationery-author-name {
     width: 1.2em; /* 垂直换行 */
 }
 
@@ -639,14 +639,14 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.layout-stationery.layout-vertical .stationery-stamp {
+.layout-stationery.is-vertical .stationery-stamp {
     width: 24px;
     height: 34px;
     padding: 3px 0;
     flex-direction: column; /* 垂直排列“浮方” */
 }
 
-.layout-stationery.layout-horizontal .stationery-stamp {
+.layout-stationery.is-horizontal .stationery-stamp {
     width: 34px;
     height: 24px;
     padding: 0 3px;
