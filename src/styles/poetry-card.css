@@ -561,7 +561,6 @@
     line-height: 2.0;
     color: #2c3e50; /* 黛黑色 */
     font-family: "STKaiti", "KaiTi", serif;
-    white-space: nowrap; /* 禁止换行，与 Canvas 导出保持一致 */
 }
 
 /* 最左侧/最后一行 作者朝代列 */

@@ -538,13 +538,30 @@ function exportImage() {
     ctx.strokeRect(innerOffset, innerOffset, width - innerOffset * 2, height - innerOffset * 2)
 
     // C. 划分网格并绘制每一列内容
-    // 内容列组成： 标题列 (1列) + 正文各行 (N列) + 作者朝代列 (1列)
     const lines = poetry.body.split('\n')
-    const totalCols = 1 + lines.length + 1
-    
     const usableWidth = width - innerOffset * 2
+    const usableHeight = height - innerOffset * 2
+    const bodyFontSize = fontSize.value * scale
+    const bodySpacing = letterSpacing.value * scale
+
+    // 竖排每列 / 横排每行 最大容纳字符数（与 CSS 换行行为一致）
+    const maxCharsPerSlot = layout.value === 'vertical'
+      ? Math.max(1, Math.floor((usableHeight - 16 * scale) / (bodyFontSize + bodySpacing)))
+      : Math.max(1, Math.floor((usableWidth - 24 * scale) / (bodyFontSize + bodySpacing)))
+
+    // 将过长的诗句拆分为子列/子行
+    const bodySubLines = []
+    lines.forEach(line => {
+      const chars = line.split('')
+      for (let i = 0; i < chars.length; i += maxCharsPerSlot) {
+        bodySubLines.push(chars.slice(i, i + maxCharsPerSlot))
+      }
+    })
+
+    // 内容列/行组成： 标题 (1) + 正文子行 (N) + 作者朝代 (1)
+    const totalCols = 1 + bodySubLines.length + 1
     const colWidth = usableWidth / totalCols
-    
+
     // 统一设置绘制参数
     ctx.textAlign = 'center'
     
@@ -581,20 +598,17 @@ function exportImage() {
         ctx.fillText(char, titleStartX + idx * (titleFontSize + titleSpacing) + titleFontSize / 2, titleRowY)
       })
 
-      // ---- 2. 中间行：正文的每一行 ----
-      const bodyFontSize = fontSize.value * scale
-      const bodySpacing = letterSpacing.value * scale
+      // ---- 2. 中间行：正文的每一行（支持长句自动换行） ----
       ctx.font = `${bodyFontSize}px ${baseFontFamily}`
       ctx.fillStyle = '#2c3e50'
-      
-      lines.forEach((line, lineIdx) => {
-        const rowY = innerOffset + (1 + lineIdx + 0.5) * rowHeight
-        const chars = line.split('')
-        
-        const lineTotalWidth = chars.length * bodyFontSize + (chars.length - 1) * bodySpacing
+
+      bodySubLines.forEach((subChars, subIdx) => {
+        const rowY = innerOffset + (1 + subIdx + 0.5) * rowHeight
+
+        const lineTotalWidth = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
         const lineStartX = (width - lineTotalWidth) / 2
-        
-        chars.forEach((char, charIdx) => {
+
+        subChars.forEach((char, charIdx) => {
           ctx.fillText(char, lineStartX + charIdx * (bodyFontSize + bodySpacing) + bodyFontSize / 2, rowY)
         })
       })
@@ -712,20 +726,17 @@ function exportImage() {
       ctx.fillText(char, titleColX, titleStartY + idx * (titleFontSize + titleSpacing))
     })
 
-    // ---- 2. 中间列：正文的每一行 ----
-    const bodyFontSize = fontSize.value * scale
-    const bodySpacing = letterSpacing.value * scale
+    // ---- 2. 中间列：正文（支持长句自动换列） ----
     ctx.font = `${bodyFontSize}px ${baseFontFamily}`
     ctx.fillStyle = '#2c3e50' // 正文用深墨黛蓝
-    
-    lines.forEach((line, lineIdx) => {
-      const colX = width - innerOffset - (1 + lineIdx + 0.5) * colWidth
-      const chars = line.split('')
-      
-      const lineTotalHeight = chars.length * bodyFontSize + (chars.length - 1) * bodySpacing
-      const lineStartY = innerOffset + (height - innerOffset * 2 - lineTotalHeight) / 2
-      
-      chars.forEach((char, charIdx) => {
+
+    bodySubLines.forEach((subChars, subIdx) => {
+      const colX = width - innerOffset - (1 + subIdx + 0.5) * colWidth
+
+      const lineTotalHeight = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
+      const lineStartY = innerOffset + (usableHeight - lineTotalHeight) / 2
+
+      subChars.forEach((char, charIdx) => {
         ctx.fillText(char, colX, lineStartY + charIdx * (bodyFontSize + bodySpacing))
       })
     })
