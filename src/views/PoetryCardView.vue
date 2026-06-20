@@ -538,28 +538,19 @@ function exportImage() {
     ctx.strokeRect(innerOffset, innerOffset, width - innerOffset * 2, height - innerOffset * 2)
 
     // C. 划分网格并绘制每一列内容
+    // 内容列组成：标题 (1) + 正文各行 (N) + 作者朝代 (1)
     const lines = poetry.body.split('\n')
     const usableWidth = width - innerOffset * 2
     const usableHeight = height - innerOffset * 2
     const bodyFontSize = fontSize.value * scale
     const bodySpacing = letterSpacing.value * scale
 
-    // 竖排每列 / 横排每行 最大容纳字符数（与 CSS 换行行为一致）
+    // 竖排每列 / 横排每行 最大容纳字符数（超出部分在格子内换行，不新增红线）
     const maxCharsPerSlot = layout.value === 'vertical'
       ? Math.max(1, Math.floor((usableHeight - 16 * scale) / (bodyFontSize + bodySpacing)))
       : Math.max(1, Math.floor((usableWidth - 24 * scale) / (bodyFontSize + bodySpacing)))
 
-    // 将过长的诗句拆分为子列/子行
-    const bodySubLines = []
-    lines.forEach(line => {
-      const chars = line.split('')
-      for (let i = 0; i < chars.length; i += maxCharsPerSlot) {
-        bodySubLines.push(chars.slice(i, i + maxCharsPerSlot))
-      }
-    })
-
-    // 内容列/行组成： 标题 (1) + 正文子行 (N) + 作者朝代 (1)
-    const totalCols = 1 + bodySubLines.length + 1
+    const totalCols = 1 + lines.length + 1
     const colWidth = usableWidth / totalCols
 
     // 统一设置绘制参数
@@ -598,19 +589,31 @@ function exportImage() {
         ctx.fillText(char, titleStartX + idx * (titleFontSize + titleSpacing) + titleFontSize / 2, titleRowY)
       })
 
-      // ---- 2. 中间行：正文的每一行（支持长句自动换行） ----
+      // ---- 2. 中间行：正文的每一行（长句在格子内自动换行） ----
       ctx.font = `${bodyFontSize}px ${baseFontFamily}`
       ctx.fillStyle = '#2c3e50'
+      const subRowLineH = bodyFontSize * 1.35
+      const subRowGap = 2 * scale
 
-      bodySubLines.forEach((subChars, subIdx) => {
-        const rowY = innerOffset + (1 + subIdx + 0.5) * rowHeight
+      lines.forEach((line, lineIdx) => {
+        const rowCenterY = innerOffset + (1 + lineIdx + 0.5) * rowHeight
+        const chars = line.split('')
+        const numSubRows = Math.ceil(chars.length / maxCharsPerSlot)
 
-        const lineTotalWidth = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
-        const lineStartX = (width - lineTotalWidth) / 2
+        // 子行垂直居中排布在该行空间内
+        const totalSubHeight = numSubRows * subRowLineH + (numSubRows - 1) * subRowGap
+        const subOriginY = rowCenterY - totalSubHeight / 2 + subRowLineH / 2
 
-        subChars.forEach((char, charIdx) => {
-          ctx.fillText(char, lineStartX + charIdx * (bodyFontSize + bodySpacing) + bodyFontSize / 2, rowY)
-        })
+        for (let sr = 0; sr < numSubRows; sr++) {
+          const subChars = chars.slice(sr * maxCharsPerSlot, (sr + 1) * maxCharsPerSlot)
+          const subY = subOriginY + sr * (subRowLineH + subRowGap)
+          const subW = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
+          const subStartX = (width - subW) / 2
+
+          subChars.forEach((char, ci) => {
+            ctx.fillText(char, subStartX + ci * (bodyFontSize + bodySpacing) + bodyFontSize / 2, subY)
+          })
+        }
       })
 
       // ---- 3. 最后一行：朝代红框 + 作者名字 + 底部红印章 ----
@@ -726,19 +729,31 @@ function exportImage() {
       ctx.fillText(char, titleColX, titleStartY + idx * (titleFontSize + titleSpacing))
     })
 
-    // ---- 2. 中间列：正文（支持长句自动换列） ----
+    // ---- 2. 中间列：正文（长句在格子内自动换列） ----
     ctx.font = `${bodyFontSize}px ${baseFontFamily}`
     ctx.fillStyle = '#2c3e50' // 正文用深墨黛蓝
+    const subColGap = 3 * scale // 换行子列间距（紧凑，无红线）
 
-    bodySubLines.forEach((subChars, subIdx) => {
-      const colX = width - innerOffset - (1 + subIdx + 0.5) * colWidth
+    lines.forEach((line, lineIdx) => {
+      const colCenterX = width - innerOffset - (1 + lineIdx + 0.5) * colWidth
+      const chars = line.split('')
+      const numSubCols = Math.ceil(chars.length / maxCharsPerSlot)
 
-      const lineTotalHeight = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
-      const lineStartY = innerOffset + (usableHeight - lineTotalHeight) / 2
+      // 子列水平居中排布在该列空间内
+      const subColCharW = bodyFontSize * 0.85 // 竖排汉字近似宽度
+      const totalSubWidth = numSubCols * subColCharW + (numSubCols - 1) * subColGap
+      const subOriginX = colCenterX - totalSubWidth / 2 + subColCharW / 2
 
-      subChars.forEach((char, charIdx) => {
-        ctx.fillText(char, colX, lineStartY + charIdx * (bodyFontSize + bodySpacing))
-      })
+      for (let sc = 0; sc < numSubCols; sc++) {
+        const subChars = chars.slice(sc * maxCharsPerSlot, (sc + 1) * maxCharsPerSlot)
+        const subX = subOriginX + sc * (subColCharW + subColGap)
+        const subH = subChars.length * bodyFontSize + (subChars.length - 1) * bodySpacing
+        const subStartY = innerOffset + (usableHeight - subH) / 2
+
+        subChars.forEach((char, ci) => {
+          ctx.fillText(char, subX, subStartY + ci * (bodyFontSize + bodySpacing))
+        })
+      }
     })
 
     // ---- 3. 最左侧列：朝代红框 + 作者名字 + 底部红印章 ----
