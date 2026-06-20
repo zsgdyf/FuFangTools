@@ -11,6 +11,19 @@
     <div class="poetry-card-wrapper">
       <!-- 左侧：控制面板 -->
       <div class="control-panel">
+        <!-- 0. 模板样式选择 -->
+        <div class="panel-section">
+          <h3>🖼️ 模板样式</h3>
+          <div class="toggle-buttons">
+            <button :class="['toggle-btn', { active: cardStyleMode === 'modern' }]" @click="setTemplateMode('modern')">
+              极简国风
+            </button>
+            <button :class="['toggle-btn', { active: cardStyleMode === 'stationery' }]" @click="setTemplateMode('stationery')">
+              红线信笺
+            </button>
+          </div>
+        </div>
+
         <!-- 1. 文本输入与获取 -->
         <div class="panel-section">
           <h3>📜 文本内容</h3>
@@ -34,7 +47,7 @@
               />
             </div>
             <div class="config-item">
-              <label>作者 / 朝代</label>
+              <label>作者</label>
               <input
                 type="text"
                 class="tool-input"
@@ -42,6 +55,17 @@
                 v-model="poetry.author"
               />
             </div>
+          </div>
+          <!-- 朝代/锁屏词 -->
+          <div class="config-item" style="margin-top: 12px;">
+            <label>朝代 / 锁屏边框文字 (如：元、解锁)</label>
+            <input
+              type="text"
+              class="tool-input"
+              style="height: 42px; font-size: 0.9rem; font-weight: normal; text-align: left; padding: 0 12px;"
+              v-model="poetry.dynasty"
+              placeholder="例如：唐、元，也可填“解锁”"
+            />
           </div>
           <button class="btn-calc btn-secondary" style="width: 100%; padding: 12px; font-size: 0.95rem; margin-top: 10px;" @click="randomizePoetry">
             随机经典诗词 ↺
@@ -55,10 +79,18 @@
             <div class="config-item">
               <label>排版方向</label>
               <div class="toggle-buttons">
-                <button :class="['toggle-btn', { active: layout === 'vertical' }]" @click="layout = 'vertical'">
+                <button 
+                  :class="['toggle-btn', { active: layout === 'vertical' }]" 
+                  @click="layout = 'vertical'"
+                  :disabled="cardStyleMode === 'stationery'"
+                >
                   竖排
                 </button>
-                <button :class="['toggle-btn', { active: layout === 'horizontal' }]" @click="layout = 'horizontal'">
+                <button 
+                  :class="['toggle-btn', { active: layout === 'horizontal' }]" 
+                  @click="layout = 'horizontal'"
+                  :disabled="cardStyleMode === 'stationery'"
+                >
                   横排
                 </button>
               </div>
@@ -87,14 +119,14 @@
             </div>
           </div>
           <div class="config-grid" style="margin-top: 14px;">
-            <div class="config-item">
+            <div class="config-item" v-if="cardStyleMode === 'modern'">
               <label>行高比例 ({{ lineHeight }})</label>
               <input type="range" min="1.4" max="3.0" step="0.1" class="range-slider" v-model.number="lineHeight" />
             </div>
-            <div class="config-item" style="justify-content: center;">
+            <div class="config-item" :style="{ justifyContent: 'center', gridColumn: cardStyleMode === 'stationery' ? 'span 2' : 'auto' }">
               <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; margin-top: 14px;">
                 <input type="checkbox" v-model="showStamp" style="width: 16px; height: 16px; accent-color: var(--primary);" />
-                显示“浮方”红印章
+                显示红印章
               </label>
             </div>
           </div>
@@ -103,33 +135,39 @@
         <!-- 3. 背景与主题 -->
         <div class="panel-section">
           <h3>🎨 背景颜色 & 渐变</h3>
-          <div class="gradient-palette">
-            <div
-              v-for="(gradient, index) in PRESET_GRADIENTS"
-              :key="index"
-              :class="['palette-item', { active: activeGradientIndex === index }]"
-              :style="{ background: gradient.css }"
-              @click="applyPreset(index)"
-              :title="gradient.name"
-            ></div>
-          </div>
-          <div class="color-picker-group">
-            <div class="color-input-wrapper">
-              <label>文字颜色</label>
-              <div class="toggle-buttons" style="padding: 2px;">
-                <button :class="['toggle-btn', { active: textTheme === 'white' }]" @click="textTheme = 'white'" style="padding: 4px 10px;">
-                  明白
-                </button>
-                <button :class="['toggle-btn', { active: textTheme === 'dark' }]" @click="textTheme = 'dark'" style="padding: 4px 10px;">
-                  黛黑
-                </button>
+          <div v-if="cardStyleMode === 'modern'">
+            <div class="gradient-palette">
+              <div
+                v-for="(gradient, index) in PRESET_GRADIENTS"
+                :key="index"
+                :class="['palette-item', { active: activeGradientIndex === index }]"
+                :style="{ background: gradient.css }"
+                @click="applyPreset(index)"
+                :title="gradient.name"
+              ></div>
+            </div>
+            <div class="color-picker-group">
+              <div class="color-input-wrapper">
+                <label>文字颜色</label>
+                <div class="toggle-buttons" style="padding: 2px;">
+                  <button :class="['toggle-btn', { active: textTheme === 'white' }]" @click="textTheme = 'white'" style="padding: 4px 10px;">
+                    明白
+                  </button>
+                  <button :class="['toggle-btn', { active: textTheme === 'dark' }]" @click="textTheme = 'dark'" style="padding: 4px 10px;">
+                    黛黑
+                  </button>
+                </div>
+              </div>
+              <div class="color-input-wrapper" style="margin-left: auto;">
+                <label>自定义渐变</label>
+                <input type="color" class="color-picker" v-model="customColor1" @input="applyCustomColor" />
+                <input type="color" class="color-picker" v-model="customColor2" @input="applyCustomColor" />
               </div>
             </div>
-            <div class="color-input-wrapper" style="margin-left: auto;">
-              <label>自定义渐变起止</label>
-              <input type="color" class="color-picker" v-model="customColor1" @input="applyCustomColor" />
-              <input type="color" class="color-picker" v-model="customColor2" @input="applyCustomColor" />
-            </div>
+          </div>
+          <!-- 信笺模式提示 -->
+          <div v-else style="background: rgba(150, 32, 30, 0.04); padding: 12px 16px; border-radius: 12px; border: 1px dashed rgba(150, 32, 30, 0.2); font-size: 0.85rem; color: #96201e; text-align: left; line-height: 1.5;">
+            💡 <b>红线信笺模板</b>使用纯白底色与实色红线边框，呈现经典手抄信札意境。
           </div>
         </div>
 
@@ -166,10 +204,11 @@
               'poetry-card',
               `size-${cardSize}`,
               `font-${fontStyle}`,
-              `text-${textTheme}`
+              `text-${textTheme}`,
+              { 'style-stationery': cardStyleMode === 'stationery' }
             ]"
             :style="[
-              cardBackgroundStyle,
+              cardStyleMode === 'modern' ? cardBackgroundStyle : {},
               card3DStyle
             ]"
             ref="cardRef"
@@ -177,13 +216,13 @@
             <!-- 3D 视差高光层 -->
             <div class="card-reflection"></div>
 
-            <!-- 卡片正文内容 -->
-            <div :class="['card-content', `layout-${layout}`]">
+            <!-- 1. 传统极简国风模式 -->
+            <div v-if="cardStyleMode === 'modern'" :class="['card-content', `layout-${layout}`]">
               <!-- 诗名与作者 -->
               <div class="card-title-section">
                 <div class="card-poetry-title">{{ poetry.title || '无题' }}</div>
                 <div class="card-poetry-author">
-                  {{ poetry.author ? `[${poetry.author}]` : '' }}
+                  {{ poetry.dynasty ? `[${poetry.dynasty}·${poetry.author}]` : (poetry.author ? `[${poetry.author}]` : '') }}
                 </div>
               </div>
 
@@ -200,8 +239,52 @@
               </div>
             </div>
 
-            <!-- 国风印章 -->
-            <div v-if="showStamp" class="card-stamp">
+            <!-- 2. 中式红线信笺模式 (Flex 布局，可靠的从右到左列排布) -->
+            <div v-else class="layout-stationery">
+              <!-- 最右侧列：诗名 -->
+              <div class="stationery-col col-title">
+                {{ poetry.title || '无题' }}
+              </div>
+
+              <!-- 中间列：正文的每一句 -->
+              <div 
+                v-for="(line, lineIdx) in poetry.body.split('\n')" 
+                :key="lineIdx" 
+                class="stationery-col col-body-line"
+                :style="{
+                  fontSize: `${fontSize}px`,
+                  letterSpacing: `${letterSpacing}px`
+                }"
+              >
+                {{ line }}
+              </div>
+
+              <!-- 最左侧列：朝代框 + 作者 + 印章 -->
+              <div class="stationery-col col-author">
+                <div class="author-cell-wrapper">
+                  <!-- 朝代小红框 -->
+                  <div class="stationery-dynasty" v-if="poetry.dynasty">
+                    {{ poetry.dynasty }}
+                  </div>
+                  <div v-else style="height: 10px;"></div>
+                  
+                  <!-- 作者姓名 -->
+                  <div class="stationery-author-name">
+                    {{ poetry.author }}
+                  </div>
+
+                  <!-- 底部红色小印章 -->
+                  <div class="stationery-stamp" v-if="showStamp">
+                    <span>浮</span>
+                    <span>方</span>
+                  </div>
+                  <div v-else style="height: 34px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 国风印章 (仅现代模式) -->
+            <div v-if="cardStyleMode === 'modern' && showStamp" class="card-stamp">
               浮<br/>方
             </div>
           </div>
@@ -289,9 +372,11 @@ const POETRY_DATABASE = [
 const poetry = reactive({
   title: '',
   author: '',
+  dynasty: '',
   body: ''
 })
 
+const cardStyleMode = ref('modern') // modern: 极简现代, stationery: 红线信笺
 const layout = ref('vertical') // vertical: 竖排, horizontal: 横排
 const fontStyle = ref('kaiti')  // kaiti: 楷体, serif: 宋体
 const fontSize = ref(18)        // px
@@ -301,6 +386,15 @@ const showStamp = ref(true)
 
 const cardSize = ref('card')    // card: 3:4, wallpaper: 9:16
 const textTheme = ref('white')   // white: 白色, dark: 黛黑色
+
+// 切换模板模式
+function setTemplateMode(mode) {
+  cardStyleMode.value = mode
+  if (mode === 'stationery') {
+    layout.value = 'vertical'
+    textTheme.value = 'dark'
+  }
+}
 
 // 渐变状态
 const activeGradientIndex = ref(0)
@@ -370,8 +464,17 @@ function randomizePoetry() {
   }
   const selected = POETRY_DATABASE[nextIndex]
   poetry.title = selected.title
-  poetry.author = selected.author
   poetry.body = selected.body
+  
+  // 智能解析作者与朝代
+  if (selected.author && selected.author.includes('·')) {
+    const parts = selected.author.split('·')
+    poetry.dynasty = parts[0]
+    poetry.author = parts[1]
+  } else {
+    poetry.dynasty = ''
+    poetry.author = selected.author || ''
+  }
 }
 
 function applyPreset(index) {
@@ -395,6 +498,9 @@ function exportImage() {
   const previewWidth = cardSize.value === 'card' ? 360 : 320
   const previewHeight = cardSize.value === 'card' ? 480 : 569
   
+  // 确定绘制的字体
+  const baseFontFamily = fontStyle.value === 'kaiti' ? '"STKaiti", "KaiTi", serif' : '"SimSun", "Songti SC", serif'
+  
   const width = previewWidth * scale
   const height = previewHeight * scale
 
@@ -408,247 +514,325 @@ function exportImage() {
   // 启用高清图像平滑
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-
-  // 3. 绘制渐变背景
-  let gradient
-  if (isCustomColorActive.value) {
-    gradient = ctx.createLinearGradient(0, 0, width, height)
-    gradient.addColorStop(0, customColor1.value)
-    gradient.addColorStop(1, customColor2.value)
-  } else {
-    const preset = PRESET_GRADIENTS[activeGradientIndex.value]
-    gradient = ctx.createLinearGradient(0, 0, width, height)
-    gradient.addColorStop(0, preset.colors[0])
-    gradient.addColorStop(1, preset.colors[1])
-  }
-  ctx.fillStyle = gradient
-  ctx.fillRect(0, 0, width, height)
-
-  const isWhiteText = textTheme.value === 'white'
-
-  // A. 绘制宣纸边缘暗角（Vignette）
-  const vignette = ctx.createRadialGradient(width / 2, height / 2, Math.min(width, height) * 0.3, width / 2, height / 2, Math.max(width, height) * 0.7)
-  vignette.addColorStop(0, 'rgba(0, 0, 0, 0)')
-  vignette.addColorStop(1, isWhiteText ? 'rgba(0, 0, 0, 0.45)' : 'rgba(0, 0, 0, 0.15)')
-  ctx.fillStyle = vignette
-  ctx.fillRect(0, 0, width, height)
-
-  // B. 绘制宣纸帘格与交织纤维质感 (Rice Paper Grid Texture)
-  ctx.strokeStyle = isWhiteText ? 'rgba(255, 255, 255, 0.015)' : 'rgba(0, 0, 0, 0.008)'
-  ctx.lineWidth = 1 * scale
-  // 纵向格线 (帘格)
-  for (let x = 0; x < width; x += 20 * scale) {
-    ctx.beginPath()
-    ctx.moveTo(x, 0)
-    ctx.lineTo(x, height)
-    ctx.stroke()
-  }
-  // 横向格线 (帘格)
-  for (let y = 0; y < height; y += 20 * scale) {
-    ctx.beginPath()
-    ctx.moveTo(0, y)
-    ctx.lineTo(width, y)
-    ctx.stroke()
-  }
-
-  // C. 绘制精致中式古典双线内边框
-  const borderOffset = 16 * scale
-  ctx.strokeStyle = isWhiteText ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)'
-  ctx.lineWidth = 1 * scale
-  ctx.strokeRect(borderOffset, borderOffset, width - borderOffset * 2, height - borderOffset * 2)
-
-  // 4. 确定文字颜色与阴影
-  const textColor = isWhiteText ? '#ffffff' : '#1e293b'
-  ctx.fillStyle = textColor
-  
-  // 设置文字阴影提高质感
-  if (isWhiteText) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.15)'
-    ctx.shadowBlur = 12 * scale
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 2 * scale
-  } else {
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.4)'
-    ctx.shadowBlur = 4 * scale
-    ctx.shadowOffsetX = 0
-    ctx.shadowOffsetY = 1 * scale
-  }
-
-  // 5. 文字字体配置映射 (与 CSS 一致)
-  const fontMapping = {
-    serif: '"Noto Serif SC", "Songti SC", "STSong", "SimSun", serif',
-    kaiti: '"STKaiti", "KaiTi", "DFKai-SB", serif',
-    sans: 'system-ui, -apple-system, sans-serif'
-  }
-  const baseFontFamily = fontMapping[fontStyle.value] || fontMapping.kaiti
-
-  // 6. 进行文字绘制（核心逻辑：区分横竖排版）
   const padding = 45 * scale
   
-  if (layout.value === 'horizontal') {
-    // --- 横向排版绘制 ---
-    ctx.textAlign = 'center'
+  if (cardStyleMode.value === 'stationery') {
+    // ==========================================
+    // 🎨 古典红线信笺风格绘制（干净极简，与参考图一致）
+    // ==========================================
+    ctx.shadowColor = 'transparent' // 信笺不需要文字阴影
     
-    // A. 绘制标题和作者
-    const titleText = poetry.title || '无题'
-    const authorText = poetry.author ? `[${poetry.author}]` : ''
-    
-    ctx.font = `bold ${24 * scale}px ${baseFontFamily}`
-    const titleY = padding + 30 * scale
-    ctx.fillText(titleText, width / 2, titleY)
-    
-    let nextY = titleY + 30 * scale
-    if (authorText) {
-      ctx.font = `${14 * scale}px ${baseFontFamily}`
-      ctx.fillText(authorText, width / 2, nextY)
-      nextY += 45 * scale
-    }
-    
-    // B. 绘制正文每一行
-    const lines = poetry.body.split('\n')
-    const drawFontSize = fontSize.value * scale
-    ctx.font = `${drawFontSize}px ${baseFontFamily}`
-    
-    const bodyLineHeight = drawFontSize * lineHeight.value
-    // 计算正文垂直居中
-    const totalBodyHeight = lines.length * bodyLineHeight
-    const startBodyY = nextY + (height - padding - nextY - totalBodyHeight) / 2 + drawFontSize / 2
-    
-    lines.forEach((line, lineIndex) => {
-      // 绘制字间距（横向字间距由于原生 Canvas 不直接支持 letter-spacing，我们进行逐字渲染或字符数组间隔绘制）
-      const charSpacing = letterSpacing.value * scale
-      if (charSpacing > 0) {
-        // 自定义字间距渲染
-        const chars = line.split('')
-        // 计算这一行在带字间距下的总宽度
-        let totalLineWidth = 0
-        const charWidths = chars.map(c => {
-          const w = ctx.measureText(c).width
-          totalLineWidth += w
-          return w
-        })
-        totalLineWidth += (chars.length - 1) * charSpacing
-        
-        let startX = (width - totalLineWidth) / 2
-        chars.forEach((char, charIdx) => {
-          ctx.fillText(char, startX + charWidths[charIdx] / 2, startBodyY + lineIndex * bodyLineHeight)
-          startX += charWidths[charIdx] + charSpacing
-        })
-      } else {
-        // 无字间距，普通渲染
-        ctx.fillText(line, width / 2, startBodyY + lineIndex * bodyLineHeight)
-      }
-    })
+    // A. 纯白背景（无暗角、无纹理）
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, width, height)
 
-  } else {
-    // --- 竖向排版绘制 (自右向左，文字竖写) ---
+    // B. 绘制双层红线边框
+    const redColor = '#96201e'
+    ctx.strokeStyle = redColor
+    
+    // 粗外框
+    const outerOffset = 10 * scale
+    ctx.lineWidth = 2.5 * scale
+    ctx.strokeRect(outerOffset, outerOffset, width - outerOffset * 2, height - outerOffset * 2)
+    
+    // 细内框
+    const innerOffset = 16 * scale
+    ctx.lineWidth = 1 * scale
+    ctx.strokeRect(innerOffset, innerOffset, width - innerOffset * 2, height - innerOffset * 2)
+
+    // C. 划分网格并绘制每一列内容
+    // 内容列组成： 标题列 (1列) + 正文各行 (N列) + 作者朝代列 (1列)
+    const lines = poetry.body.split('\n')
+    const totalCols = 1 + lines.length + 1
+    
+    const usableWidth = width - innerOffset * 2
+    const colWidth = usableWidth / totalCols
+    
+    // 统一设置绘制参数
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
 
-    const drawFontSize = fontSize.value * scale
-    const charSpacing = letterSpacing.value * scale
-    const bodyLineHeight = drawFontSize * lineHeight.value
-    const lines = poetry.body.split('\n')
-    
-    // A. 计算正文和标题列的总占用宽度
-    // 竖排下，每一列宽度等于 bodyLineHeight
-    const titleColumnWidth = 35 * scale // 标题加作者单独一列的宽度
-    const textGap = 28 * scale // 列与列之间的间隔
-    const totalColumns = lines.length + (poetry.title || poetry.author ? 1 : 0)
-    const totalWidthOccupied = (lines.length - 1) * bodyLineHeight + (poetry.title || poetry.author ? textGap + titleColumnWidth : 0)
-    
-    // 正文从右往左绘制，确定第一列正文的 X 坐标 (居中偏右)
-    const startX = (width + totalWidthOccupied) / 2
+    // 绘制垂直分隔实色红线 (共 totalCols - 1 条)
+    ctx.strokeStyle = redColor
+    ctx.lineWidth = 1 * scale
+    for (let i = 1; i < totalCols; i++) {
+      const lineX = width - innerOffset - i * colWidth
+      ctx.beginPath()
+      ctx.moveTo(lineX, innerOffset)
+      ctx.lineTo(lineX, height - innerOffset)
+      ctx.stroke()
+    }
 
-    // B. 绘制正文（从右向左列）
-    lines.forEach((line, lineIndex) => {
-      const colX = startX - lineIndex * bodyLineHeight
+    // 绘制内容 (从右往左流，列索引 0 到 totalCols - 1)
+    
+    // ---- 1. 最右侧列：诗名（黑色，与参考图一致） ----
+    const titleColX = width - innerOffset - 0.5 * colWidth
+    const titleText = poetry.title || '无题'
+    const titleChars = titleText.split('')
+    const titleFontSize = 24 * scale
+    const titleSpacing = 6 * scale
+    ctx.font = `bold ${titleFontSize}px ${baseFontFamily}`
+    ctx.fillStyle = '#1a1a1a' // 黑色标题
+    
+    let titleTotalHeight = titleChars.length * titleFontSize + (titleChars.length - 1) * titleSpacing
+    let titleStartY = innerOffset + (height - innerOffset * 2 - titleTotalHeight) / 2
+    
+    titleChars.forEach((char, idx) => {
+      ctx.fillText(char, titleColX, titleStartY + idx * (titleFontSize + titleSpacing))
+    })
+
+    // ---- 2. 中间列：正文的每一行 ----
+    const bodyFontSize = fontSize.value * scale
+    const bodySpacing = letterSpacing.value * scale
+    ctx.font = `${bodyFontSize}px ${baseFontFamily}`
+    ctx.fillStyle = '#2c3e50' // 正文用深墨黛蓝
+    
+    lines.forEach((line, lineIdx) => {
+      const colX = width - innerOffset - (1 + lineIdx + 0.5) * colWidth
       const chars = line.split('')
       
-      // 竖排单列的垂直高度，用于垂直居中
-      const colHeight = chars.length * drawFontSize + (chars.length - 1) * charSpacing
-      const startY = (height - colHeight) / 2
+      const lineTotalHeight = chars.length * bodyFontSize + (chars.length - 1) * bodySpacing
+      const lineStartY = innerOffset + (height - innerOffset * 2 - lineTotalHeight) / 2
       
-      ctx.font = `${drawFontSize}px ${baseFontFamily}`
       chars.forEach((char, charIdx) => {
-        const charY = startY + charIdx * (drawFontSize + charSpacing)
-        ctx.fillText(char, colX, charY)
+        ctx.fillText(char, colX, lineStartY + charIdx * (bodyFontSize + bodySpacing))
       })
     })
 
-    // C. 绘制标题和作者（最左侧列，带分隔线）
-    if (poetry.title || poetry.author) {
-      const titleColX = startX - lines.length * bodyLineHeight - textGap
+    // ---- 3. 最左侧列：朝代红框 + 作者名字 + 底部红印章 ----
+    const authorColX = width - innerOffset - (totalCols - 0.5) * colWidth
+    
+    // A. 预先计算各部分高度
+    const dynastyText = poetry.dynasty || ''
+    const authorText = poetry.author || ''
+    
+    // 印章尺寸
+    const stampW = 22 * scale
+    const stampH = 30 * scale
+    
+    // 作者名字尺寸
+    const authFontSize = 14 * scale
+    const authSpacing = 4 * scale
+    const authorChars = authorText.split('')
+    const authTotalHeight = authorText ? (authorChars.length * authFontSize + (authorChars.length - 1) * authSpacing) : 0
+    
+    // 朝代框尺寸
+    const dynFontSize = 10 * scale
+    const dynSpacing = 2 * scale
+    const dynPaddingX = 3 * scale
+    const dynPaddingY = 5 * scale
+    const dynastyChars = dynastyText.split('')
+    const dynBoxW = dynFontSize + dynPaddingX * 2
+    const dynBoxH = dynastyText ? (dynastyChars.length * dynFontSize + (dynastyChars.length - 1) * dynSpacing + dynPaddingY * 2) : 0
+
+    // B. 从底部往上依次绘制，保持 8px ( * scale) 的 gap
+    const gap = 8 * scale
+    let currentBottomY = height - innerOffset - 16 * scale // 底部留白
+
+    // 1. 绘制印章
+    if (showStamp.value) {
+      const stampX = authorColX - stampW / 2
+      const stampY = currentBottomY - stampH
       
-      // 绘制垂直分隔细线
-      ctx.strokeStyle = isWhiteText ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.15)'
-      ctx.lineWidth = 1.5 * scale
-      ctx.beginPath()
-      ctx.moveTo(titleColX + textGap / 2, padding)
-      ctx.lineTo(titleColX + textGap / 2, height - padding)
-      ctx.stroke()
+      // 实心红色矩形
+      ctx.fillStyle = redColor
+      ctx.fillRect(stampX, stampY, stampW, stampH)
       
-      // 合并绘制标题和作者在同一列中（标题在上，作者在下）
-      const titleText = poetry.title || '无题'
-      const authorText = poetry.author ? `[${poetry.author}]` : ''
+      // 白字"浮方"
+      ctx.fillStyle = '#ffffff'
+      const stampTextSize = 9 * scale
+      ctx.font = `bold ${stampTextSize}px "STKaiti", "KaiTi", serif`
+      ctx.textBaseline = 'middle'
+      ctx.fillText('浮', authorColX, stampY + stampH * 0.3)
+      ctx.fillText('方', authorColX, stampY + stampH * 0.7)
       
-      const titleChars = titleText.split('')
-      const titleCharSize = 20 * scale
-      const titleSpacing = 4 * scale
-      const titleHeight = titleChars.length * titleCharSize + (titleChars.length - 1) * titleSpacing
+      currentBottomY = stampY - gap
+    }
+
+    // 2. 绘制作者
+    if (authorText) {
+      ctx.textBaseline = 'top'
+      ctx.font = `${authFontSize}px ${baseFontFamily}`
+      ctx.fillStyle = '#334155'
       
-      const authorChars = authorText.split('')
-      const authorCharSize = 12 * scale
-      const authorSpacing = 2 * scale
-      const authorHeight = authorChars.length * authorCharSize + (authorChars.length - 1) * authorSpacing
+      const authorStartY = currentBottomY - authTotalHeight
       
-      // 整体居中计算
-      const verticalGap = 16 * scale
-      const totalColHeight = titleHeight + (authorText ? verticalGap + authorHeight : 0)
-      let currentY = (height - totalColHeight) / 2
-      
-      // 绘制标题
-      ctx.font = `bold ${titleCharSize}px ${baseFontFamily}`
-      titleChars.forEach((char) => {
-        ctx.fillText(char, titleColX, currentY)
-        currentY += titleCharSize + titleSpacing
+      authorChars.forEach((char, idx) => {
+        ctx.fillText(char, authorColX, authorStartY + idx * (authFontSize + authSpacing))
       })
       
-      // 绘制作者
+      currentBottomY = authorStartY - gap
+    }
+
+    // 3. 绘制朝代红框
+    if (dynastyText) {
+      const dynBoxX = authorColX - dynBoxW / 2
+      const dynBoxY = currentBottomY - dynBoxH
+      
+      ctx.strokeStyle = redColor
+      ctx.lineWidth = 1 * scale
+      ctx.strokeRect(dynBoxX, dynBoxY, dynBoxW, dynBoxH)
+      
+      ctx.textBaseline = 'top'
+      ctx.font = `bold ${dynFontSize}px ${baseFontFamily}`
+      ctx.fillStyle = redColor
+      dynastyChars.forEach((char, idx) => {
+        ctx.fillText(char, authorColX, dynBoxY + dynPaddingY + idx * (dynFontSize + dynSpacing))
+      })
+    }
+  } else {
+    // ==========================================
+    // 🎨 原本的极简国风模式 (横竖排版)
+    // ==========================================
+    if (layout.value === 'horizontal') {
+      // --- 横向排版绘制 ---
+      ctx.textAlign = 'center'
+      
+      // A. 绘制标题和作者
+      const titleText = poetry.title || '无题'
+      const authorText = poetry.author ? (poetry.dynasty ? `[${poetry.dynasty}·${poetry.author}]` : `[${poetry.author}]`) : ''
+      
+      ctx.font = `bold ${24 * scale}px ${baseFontFamily}`
+      const titleY = padding + 30 * scale
+      ctx.fillText(titleText, width / 2, titleY)
+      
+      let nextY = titleY + 30 * scale
       if (authorText) {
-        currentY += verticalGap - titleSpacing
-        ctx.font = `${authorCharSize}px ${baseFontFamily}`
-        authorChars.forEach((char) => {
-          ctx.fillText(char, titleColX, currentY)
-          currentY += authorCharSize + authorSpacing
+        ctx.font = `${14 * scale}px ${baseFontFamily}`
+        ctx.fillText(authorText, width / 2, nextY)
+        nextY += 45 * scale
+      }
+      
+      // B. 绘制正文每一行
+      const lines = poetry.body.split('\n')
+      const drawFontSize = fontSize.value * scale
+      ctx.font = `${drawFontSize}px ${baseFontFamily}`
+      
+      const bodyLineHeight = drawFontSize * lineHeight.value
+      // 计算正文垂直居中
+      const totalBodyHeight = lines.length * bodyLineHeight
+      const startBodyY = nextY + (height - padding - nextY - totalBodyHeight) / 2 + drawFontSize / 2
+      
+      lines.forEach((line, lineIndex) => {
+        const charSpacing = letterSpacing.value * scale
+        if (charSpacing > 0) {
+          const chars = line.split('')
+          let totalLineWidth = 0
+          const charWidths = chars.map(c => {
+            const w = ctx.measureText(c).width
+            totalLineWidth += w
+            return w
+          })
+          totalLineWidth += (chars.length - 1) * charSpacing
+          
+          let startX = (width - totalLineWidth) / 2
+          chars.forEach((char, charIdx) => {
+            ctx.fillText(char, startX + charWidths[charIdx] / 2, startBodyY + lineIndex * bodyLineHeight)
+            startX += charWidths[charIdx] + charSpacing
+          })
+        } else {
+          ctx.fillText(line, width / 2, startBodyY + lineIndex * bodyLineHeight)
+        }
+      })
+
+    } else {
+      // --- 竖向排版绘制 (自右向左，文字竖写) ---
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'top'
+
+      const drawFontSize = fontSize.value * scale
+      const charSpacing = letterSpacing.value * scale
+      const bodyLineHeight = drawFontSize * lineHeight.value
+      const lines = poetry.body.split('\n')
+      
+      // A. 计算正文和标题列的总占用宽度
+      const titleColumnWidth = 35 * scale
+      const textGap = 28 * scale
+      const totalWidthOccupied = (lines.length - 1) * bodyLineHeight + (poetry.title || poetry.author ? textGap + titleColumnWidth : 0)
+      
+      const startX = (width + totalWidthOccupied) / 2
+
+      // B. 绘制正文（从右向左列）
+      lines.forEach((line, lineIndex) => {
+        const colX = startX - lineIndex * bodyLineHeight
+        const chars = line.split('')
+        
+        const colHeight = chars.length * drawFontSize + (chars.length - 1) * charSpacing
+        const startY = (height - colHeight) / 2
+        
+        ctx.font = `${drawFontSize}px ${baseFontFamily}`
+        chars.forEach((char, charIdx) => {
+          const charY = startY + charIdx * (drawFontSize + charSpacing)
+          ctx.fillText(char, colX, charY)
         })
+      })
+
+      // C. 绘制标题和作者（最左侧列，带分隔线）
+      if (poetry.title || poetry.author) {
+        const titleColX = startX - lines.length * bodyLineHeight - textGap
+        
+        ctx.strokeStyle = isWhiteText ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.15)'
+        ctx.lineWidth = 1.5 * scale
+        ctx.beginPath()
+        ctx.moveTo(titleColX + textGap / 2, padding)
+        ctx.lineTo(titleColX + textGap / 2, height - padding)
+        ctx.stroke()
+        
+        const titleText = poetry.title || '无题'
+        const authorText = poetry.author ? (poetry.dynasty ? `${poetry.dynasty}·${poetry.author}` : poetry.author) : ''
+        
+        const titleChars = titleText.split('')
+        const titleCharSize = 20 * scale
+        const titleSpacing = 4 * scale
+        const titleHeight = titleChars.length * titleCharSize + (titleChars.length - 1) * titleSpacing
+        
+        const authorChars = authorText.split('')
+        const authorCharSize = 12 * scale
+        const authorSpacing = 2 * scale
+        const authorHeight = authorChars.length * authorCharSize + (authorChars.length - 1) * authorSpacing
+        
+        const verticalGap = 16 * scale
+        const totalColHeight = titleHeight + (authorText ? verticalGap + authorHeight : 0)
+        let currentY = (height - totalColHeight) / 2
+        
+        ctx.font = `bold ${titleCharSize}px ${baseFontFamily}`
+        titleChars.forEach((char) => {
+          ctx.fillText(char, titleColX, currentY)
+          currentY += titleCharSize + titleSpacing
+        })
+        
+        if (authorText) {
+          currentY += verticalGap - titleSpacing
+          ctx.font = `${authorCharSize}px ${baseFontFamily}`
+          authorChars.forEach((char) => {
+            ctx.fillText(char, titleColX, currentY)
+            currentY += authorCharSize + authorSpacing
+          })
+        }
       }
     }
-  }
 
-  // 7. 绘制古风印章印记
-  if (showStamp.value) {
-    ctx.shadowColor = 'transparent' // 印章无文字阴影，保证清晰度
-    
-    const stampSize = 28 * scale
-    const stampX = layout.value === 'vertical' ? padding : width - padding - stampSize
-    const stampY = height - padding - stampSize
-    
-    // 红边框
-    ctx.strokeStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
-    ctx.lineWidth = 2 * scale
-    ctx.strokeRect(stampX, stampY, stampSize, stampSize)
-    
-    // 印章文字 ("浮方"，分两列或写小字)
-    ctx.fillStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
-    const stampFontSize = 10 * scale
-    ctx.font = `bold ${stampFontSize}px "STKaiti", "KaiTi", serif`
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    
-    // 竖排单列（与网页端预览保持完全一致）：上方为“浮”，下方为“方”
-    ctx.fillText('浮', stampX + stampSize * 0.5, stampY + stampSize * 0.3)
-    ctx.fillText('方', stampX + stampSize * 0.5, stampY + stampSize * 0.7)
+    // 7. 原本的极简国风印章印记
+    if (showStamp.value) {
+      ctx.shadowColor = 'transparent'
+      
+      const stampSize = 28 * scale
+      const stampX = layout.value === 'vertical' ? padding : width - padding - stampSize
+      const stampY = height - padding - stampSize
+      
+      ctx.strokeStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
+      ctx.lineWidth = 2 * scale
+      ctx.strokeRect(stampX, stampY, stampSize, stampSize)
+      
+      ctx.fillStyle = isWhiteText ? '#fca5a5' : '#b91c1c'
+      const stampFontSize = 10 * scale
+      ctx.font = `bold ${stampFontSize}px "STKaiti", "KaiTi", serif`
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      
+      ctx.fillText('浮', stampX + stampSize * 0.5, stampY + stampSize * 0.3)
+      ctx.fillText('方', stampX + stampSize * 0.5, stampY + stampSize * 0.7)
+    }
   }
 
   // 8. 触发二进制图片保存下载
