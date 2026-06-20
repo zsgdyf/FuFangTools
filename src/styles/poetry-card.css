@@ -497,29 +497,52 @@
 }
 
 /* 信笺排版布局 (使用可靠的 Flex 布局) */
+/* 信笺排版布局 (使用可靠的 Flex 布局) */
 .layout-stationery {
     display: flex;
-    flex-direction: row-reverse; /* 从右往左排列各列 */
     height: 100%;
     width: 100%;
     z-index: 2;
 }
 
-/* 每一列的基础样式 */
+/* 竖排信笺 */
+.layout-stationery.layout-vertical {
+    flex-direction: row-reverse; /* 从右往左排列各列 */
+}
+
+/* 横排信笺 */
+.layout-stationery.layout-horizontal {
+    flex-direction: column; /* 从上往下排列各行 */
+}
+
+/* 每一列/行的基础样式 */
 .stationery-col {
     flex: 1;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
     display: flex;
     align-items: center; /* 在列宽方向居中文字 */
     justify-content: center; /* 在列高方向居中文字 */
-    padding: 16px 0;
     min-width: 0;
+    min-height: 0;
 }
 
-/* 列间红色分隔线（row-reverse 下，border-right 恰好成为列间分隔线） */
-.stationery-col + .stationery-col {
+.layout-stationery.layout-vertical .stationery-col {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 16px 0;
+}
+
+.layout-stationery.layout-horizontal .stationery-col {
+    writing-mode: horizontal-tb;
+    padding: 0 16px;
+}
+
+/* 列间/行间红色分隔线 */
+.layout-stationery.layout-vertical .stationery-col + .stationery-col {
     border-right: 1px solid #96201e;
+}
+
+.layout-stationery.layout-horizontal .stationery-col + .stationery-col {
+    border-top: 1px solid #96201e;
 }
 
 /* 诗名列样式 */
@@ -540,22 +563,33 @@
     font-family: "STKaiti", "KaiTi", serif;
 }
 
-/* 最左侧作者朝代列 */
-.layout-stationery .col-author {
+/* 最左侧/最后一行 作者朝代列 */
+.layout-stationery.layout-vertical .col-author {
     padding: 12px 0;
     writing-mode: horizontal-tb; /* 作者列用普通水平流 */
 }
 
+.layout-stationery.layout-horizontal .col-author {
+    padding: 0 12px;
+}
+
 /* 作者列内部的包装容器 */
 .author-cell-wrapper {
-    writing-mode: horizontal-tb; /* 普通水平流 */
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end; /* 朝代、作者、印章集中在底部 */
     align-items: center;
     gap: 8px;
     height: 100%;
     width: 100%;
+}
+
+.layout-stationery.layout-vertical .author-cell-wrapper {
+    flex-direction: column;
+    justify-content: flex-end; /* 朝代、作者、印章集中在底部 */
+}
+
+.layout-stationery.layout-horizontal .author-cell-wrapper {
+    flex-direction: row;
+    justify-content: flex-end; /* 集中在右侧 */
 }
 
 /* 朝代小红框 */
@@ -568,7 +602,12 @@
     text-align: center;
     border-radius: 2px;
     font-weight: bold;
+}
+.layout-stationery.layout-vertical .stationery-dynasty {
     width: 1.5em; /* 宽度限制为一个字宽，在水平流下使其垂直堆叠换行 */
+}
+.layout-stationery.layout-horizontal .stationery-dynasty {
+    padding: 2px 4px; /* 横向排列稍微拉宽 */
 }
 
 /* 作者名字 */
@@ -580,25 +619,38 @@
     line-height: 1.4;
     text-align: center;
     font-family: "STKaiti", "KaiTi", serif;
-    width: 1.2em; /* 宽度限制为一个字宽，在水平流下使其垂直堆叠换行 */
+}
+.layout-stationery.layout-vertical .stationery-author-name {
+    width: 1.2em; /* 垂直换行 */
 }
 
 /* 印章在信笺下的样式 */
 .stationery-stamp {
-    width: 24px;
-    height: 34px;
-    padding: 3px 0;
     background: #96201e;
     color: #ffffff; /* 纯白字 */
     font-family: 'STKaiti', 'KaiTi', serif;
     font-size: 0.65rem;
     font-weight: bold;
     display: flex;
-    flex-direction: column; /* 垂直排列“浮方” */
     align-items: center;
     justify-content: center;
     line-height: 1.1;
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.layout-stationery.layout-vertical .stationery-stamp {
+    width: 24px;
+    height: 34px;
+    padding: 3px 0;
+    flex-direction: column; /* 垂直排列“浮方” */
+}
+
+.layout-stationery.layout-horizontal .stationery-stamp {
+    width: 34px;
+    height: 24px;
+    padding: 0 3px;
+    flex-direction: row; /* 水平排列“浮方” */
+    gap: 2px;
 }
 
