@@ -376,6 +376,8 @@ function drawToCanvas (canvas, targetWidth, targetHeight) {
 
   canvas.style.width = displayWidth + 'px'
   canvas.style.height = displayHeight + 'px'
+  canvas.style.minWidth = displayWidth + 'px'
+  canvas.style.minHeight = displayHeight + 'px'
   canvas.width = displayWidth * dpr
   canvas.height = displayHeight * dpr
 
