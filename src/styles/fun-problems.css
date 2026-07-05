@@ -1,0 +1,430 @@
+/* ===================================
+   趣味题解与图示 - 样式表
+   =================================== */
+
+.fun-problems-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    text-align: left;
+}
+
+/* 题目切换导航栏 */
+.problem-selector {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px;
+    background: rgba(241, 245, 249, 0.8);
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.selector-tab {
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-light);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selector-tab:hover:not(.disabled) {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.selector-tab.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.selector-tab.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.badge-coming {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: #e2e8f0;
+    color: #64748b;
+    border-radius: 20px;
+}
+
+/* 题目展示卡片 */
+.problem-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    border-left: 6px solid var(--primary);
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.problem-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.problem-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.problem-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.problem-tag {
+    background-color: #e0f2fe;
+    color: #0284c7;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.problem-content {
+    font-size: 1.15rem;
+    color: var(--text-main);
+    line-height: 1.9;
+    margin-bottom: 28px;
+}
+
+/* 选项区域 */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.option-item {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.option-item:hover {
+    transform: translateY(-2px);
+}
+
+.option-item.highlight-c {
+    border-color: #0ea5e9;
+    background: #f0f9ff;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.option-item.highlight-a {
+    border-color: #f43f5e;
+    background: #fff1f2;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
+}
+
+.option-badge {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+    align-self: flex-start;
+}
+
+.badge-c {
+    background: #0ea5e9;
+    color: white;
+}
+
+.badge-a {
+    background: #f43f5e;
+    color: white;
+}
+
+/* 交互可视化实验室 */
+.vis-section {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vis-header {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.vis-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vis-desc {
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+.controls {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+
+.ctrl-btn {
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ctrl-btn:hover {
+    transform: translateY(-2px);
+}
+
+.ctrl-btn:active {
+    transform: scale(0.98);
+}
+
+.ctrl-btn.active-right {
+    background-color: #0ea5e9;
+    color: white;
+    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.3);
+}
+
+.ctrl-btn.active-left {
+    background-color: #f43f5e;
+    color: white;
+    box-shadow: 0 6px 16px rgba(244, 63, 94, 0.3);
+}
+
+.ctrl-btn.inactive {
+    background-color: #f1f5f9;
+    color: #64748b;
+    box-shadow: none;
+}
+
+.ctrl-btn.inactive:hover {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+
+/* 区域适应的 Canvas 容器 */
+.canvas-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+canvas {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.info-panel {
+    margin-top: 24px;
+    background: #f0f9ff;
+    padding: 20px 24px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    color: #0369a1;
+    width: 100%;
+    line-height: 1.8;
+    border: 1px solid #bae6fd;
+    border-left: 5px solid #0ea5e9;
+    transition: all 0.3s ease;
+}
+
+.info-panel.panel-left {
+    background: #fff1f2;
+    color: #be123c;
+    border-color: #fecdd3;
+    border-left-color: #f43f5e;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.panel-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.panel-badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+}
+
+/* 详细解答区域 */
+.solution-section {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 35px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+}
+
+.solution-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-card {
+    background: #fdfdfd;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 22px;
+    transition: all 0.2s ease;
+}
+
+.step-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.step-card h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.15rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-card p, .step-card li {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.8;
+}
+
+.step-card ul {
+    padding-left: 22px;
+    margin: 12px 0;
+}
+
+.step-card li {
+    margin-bottom: 12px;
+}
+
+.step-card.official {
+    border-left: 6px solid #0ea5e9;
+    background: #f8fafc;
+}
+
+.step-card.hidden-case {
+    border-left: 6px solid #f43f5e;
+    background: #fffcfc;
+}
+
+.math-box {
+    background: #f1f5f9;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-family: monospace;
+    margin: 14px 0;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+}
+
+.summary-box {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fde68a;
+    border-radius: 16px;
+    padding: 25px;
+    color: #78350f;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.08);
+}
+
+.summary-box h4 {
+    margin: 0 0 12px 0;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #92400e;
+}
+
+@media (max-width: 768px) {
+    .problem-card, .vis-section, .solution-section {
+        padding: 20px;
+    }
+    .controls {
+        flex-direction: column;
+    }
+    .ctrl-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

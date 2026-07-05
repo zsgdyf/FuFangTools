@@ -15,6 +15,11 @@
     font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
+mjx-container *, mjx-container *::before, mjx-container *::after,
+mjx-assistive-mml *, mjx-surd *, mjx-box * {
+    box-sizing: content-box !important;
+}
+
 body {
     background: var(--bg-gradient);
     min-height: 100vh;

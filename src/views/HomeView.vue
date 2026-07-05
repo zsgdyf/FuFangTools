@@ -43,6 +43,12 @@ const allTools = [
     desc: '输入4个数字，自动寻找所有可能的24点解法。'
   },
   {
+    path: '/fun-problems',
+    icon: '📐',
+    title: '趣味题解与图示',
+    desc: '收录精选真题与巧妙解答，搭配交互式几何动态图示。'
+  },
+  {
     path: '/shortlink',
     icon: '🔗',
     title: '短链接转换器',

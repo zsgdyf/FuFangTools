@@ -56,6 +56,12 @@ const routes = [
     name: 'poetryCard',
     component: () => import('../views/PoetryCardView.vue'),
     meta: { title: '古诗词卡片生成器 - 浮方工具箱' }
+  },
+  {
+    path: '/fun-problems',
+    name: 'funProblems',
+    component: () => import('../views/FunProblemsView.vue'),
+    meta: { title: '趣味题解与图示 - 浮方工具箱' }
   }
 ]
 
