@@ -20,6 +20,17 @@ mjx-assistive-mml *, mjx-surd *, mjx-box * {
     box-sizing: content-box !important;
 }
 
+mjx-container[jax="SVG"][display="true"] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+mjx-container[jax="SVG"][display="true"] svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
 body {
     background: var(--bg-gradient);
     min-height: 100vh;

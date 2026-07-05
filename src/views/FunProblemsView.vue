@@ -71,7 +71,10 @@
           </button>
         </div>
 
-        <div class="canvas-container">
+        <div class="canvas-container" @click="openFullscreen" title="点击可全屏放大探索，支持移动端横屏查看">
+          <div class="zoom-trigger-badge">
+            <span>🔍 点击全屏放大 / 移动端支持旋转横屏</span>
+          </div>
           <canvas ref="mathCanvas"></canvas>
         </div>
 
@@ -96,19 +99,19 @@
             <li>
               <strong>圆 $D$ 的方程与切线性质：</strong><br>
               以实轴为直径的圆 $D$ 圆心为原点 $O(0,0)$，半径为 $r = a$。过 $F_1$ 作圆 $D$ 的切线，切点记为 $P$。因为 $OP \perp F_1N$，在 Rt$\triangle OPF_1$ 中，斜边 $|OF_1|=c$，直角边 $|OP|=a$，根据勾股定理可得切线长：
-              $$|F_1P| = \sqrt{|OF_1|^2 - |OP|^2} = \sqrt{c^2 - a^2} = b$$
+              $$\begin{aligned} |F_1P| &= \sqrt{|OF_1|^2 - |OP|^2} \\ &= \sqrt{c^2 - a^2} = b \end{aligned}$$
             </li>
             <li>
               <strong>垂足 $Q$ 与中位线定理（极其巧妙的几何突破口）：</strong><br>
               过右焦点 $F_2$ 作直线 $F_1N$ 的垂线，垂足记为 $Q$。因为 $OP \perp F_1N$ 且 $F_2Q \perp F_1N$，所以 $OP \parallel F_2Q$。<br>
               又因为 $O$ 为线段 $F_1F_2$ 的中点，在 $\triangle F_1QF_2$ 中，$OP$ 为中位线！因此可得垂足 $Q$ 的两大核心几何关系：
-              $$|F_2Q| = 2|OP| = 2a, \quad |F_1Q| = 2|F_1P| = 2b$$
+              $$\begin{aligned} |F_2Q| &= 2|OP| = 2a \\ |F_1Q| &= 2|F_1P| = 2b \end{aligned}$$
             </li>
             <li>
               <strong>在 Rt$\triangle NQF_2$ 中利用三角函数值：</strong><br>
               题设给出 $\cos \angle F_1NF_2 = \cos \angle QNF_2 = \frac{3}{5}$。设 $|NQ| = 3k\ (k>0)$，则斜边 $|NF_2| = 5k$，直角边 $|F_2Q| = \sqrt{(5k)^2 - (3k)^2} = 4k$。<br>
               结合上面证得的 $|F_2Q| = 2a$，可得 $4k = 2a \implies k = \frac{1}{2}a$。由此得到线段长通解：
-              $$|NF_2| = 5k = \frac{5}{2}a, \quad |NQ| = 3k = \frac{3}{2}a$$
+              $$\begin{aligned} |NF_2| &= 5k = \frac{5}{2}a \\ |NQ| &= 3k = \frac{3}{2}a \end{aligned}$$
             </li>
           </ul>
         </div>
@@ -121,18 +124,18 @@
             <li>
               <strong>利用双曲线右支定义：</strong><br>
               点 $N$ 在右支上，满足 $|NF_1| - |NF_2| = 2a$。将 $|NF_2| = \frac{5}{2}a$ 代入，得：
-              $$|NF_1| = |NF_2| + 2a = \frac{5}{2}a + 2a = \frac{9}{2}a$$
+              $$\begin{aligned} |NF_1| &= |NF_2| + 2a \\ &= \frac{5}{2}a + 2a = \frac{9}{2}a \end{aligned}$$
             </li>
             <li>
               <strong>利用直线上各点共线顺序联立方程：</strong><br>
               如上方图示观察可知，此时直线上点的顺序为 $F_1 - P - Q - N$，垂足 $Q$ 位于线段 $F_1N$ 上。因此有：
               $$|NF_1| = |NQ| + |F_1Q|$$
               将各代数式代入上式：
-              $$\frac{9}{2}a = \frac{3}{2}a + 2b \implies 3a = 2b \implies \frac{b}{a} = \frac{3}{2}$$
+              $$\begin{aligned} \frac{9}{2}a = \frac{3}{2}a + 2b &\implies 3a = 2b \\ &\implies \frac{b}{a} = \frac{3}{2} \end{aligned}$$
             </li>
             <li>
               <strong>计算双曲线离心率 $e$：</strong><br>
-              $$e = \frac{c}{a} = \sqrt{1 + \left(\frac{b}{a}\right)^2} = \sqrt{1 + \left(\frac{3}{2}\right)^2} = \sqrt{1 + \frac{9}{4}} = \frac{\sqrt{13}}{2}$$
+              $$\begin{aligned} e &= \frac{c}{a} = \sqrt{1 + \left(\frac{b}{a}\right)^2} \\ &= \sqrt{1 + \left(\frac{3}{2}\right)^2} = \sqrt{1 + \frac{9}{4}} = \frac{\sqrt{13}}{2} \end{aligned}$$
               所以，官方命题对应的正确答案为 <strong>C</strong>。
             </li>
           </ul>
@@ -146,18 +149,18 @@
             <li>
               <strong>利用双曲线左支定义：</strong><br>
               点 $N$ 在左支上，离左焦点 $F_1$ 更近，满足 $|NF_2| - |NF_1| = 2a$。将 $|NF_2| = \frac{5}{2}a$ 代入，得：
-              $$|NF_1| = |NF_2| - 2a = \frac{5}{2}a - 2a = \frac{1}{2}a$$
+              $$\begin{aligned} |NF_1| &= |NF_2| - 2a \\ &= \frac{5}{2}a - 2a = \frac{1}{2}a \end{aligned}$$
             </li>
             <li>
               <strong>利用直线上各点共线顺序联立方程：</strong><br>
               观察左支情形几何图示可知，此时直线上点的顺序变为 $N - F_1 - P - Q$，即左焦点 $F_1$ 被夹在 $N$ 与垂足 $Q$ 之间！因此有：
               $$|NQ| = |NF_1| + |F_1Q|$$
               将各代数式代入上式：
-              $$\frac{3}{2}a = \frac{1}{2}a + 2b \implies a = 2b \implies \frac{b}{a} = \frac{1}{2}$$
+              $$\begin{aligned} \frac{3}{2}a = \frac{1}{2}a + 2b &\implies a = 2b \\ &\implies \frac{b}{a} = \frac{1}{2} \end{aligned}$$
             </li>
             <li>
               <strong>计算双曲线离心率 $e$：</strong><br>
-              $$e = \frac{c}{a} = \sqrt{1 + \left(\frac{b}{a}\right)^2} = \sqrt{1 + \left(\frac{1}{2}\right)^2} = \sqrt{1 + \frac{1}{4}} = \frac{\sqrt{5}}{2}$$
+              $$\begin{aligned} e &= \frac{c}{a} = \sqrt{1 + \left(\frac{b}{a}\right)^2} \\ &= \sqrt{1 + \left(\frac{1}{2}\right)^2} = \sqrt{1 + \frac{1}{4}} = \frac{\sqrt{5}}{2} \end{aligned}$$
               所以，若交点 $N$ 在左支，离心率计算结果为 $\frac{\sqrt{5}}{2}$，对应答案为 <strong>A</strong>。
             </li>
           </ul>
@@ -173,6 +176,42 @@
         </div>
       </section>
     </div>
+
+    <!-- 全屏高清图示探索模态框 -->
+    <Teleport to="body">
+      <div v-if="showFullscreen" class="fullscreen-modal" @click.self="closeFullscreen">
+        <div class="modal-content">
+          <div class="modal-toolbar">
+            <div class="modal-title">
+              <span>🔬 几何动态实验室 (高清全屏视图)</span>
+              <span class="case-badge" :class="currentCase">{{ currentData.eStr.split(' ')[0] }}</span>
+            </div>
+            <div class="modal-actions">
+              <button class="action-btn" @click="zoomIn" title="放大图示">➕ 放大</button>
+              <button class="action-btn" @click="zoomOut" title="缩小图示">➖ 缩小</button>
+              <button class="action-btn" @click="resetZoom" title="重置标准缩放">🔄 重置</button>
+              <button class="action-btn rotate-btn" @click="toggleRotate" title="旋转90°适配手机竖屏高清查看">
+                📱 {{ isRotated ? '还原竖屏方向' : '旋转90° (横屏大图)' }}
+              </button>
+              <button class="close-btn" @click="closeFullscreen" title="关闭全屏">✕ 关闭</button>
+            </div>
+          </div>
+          <div class="modal-viewport" ref="modalViewport">
+            <div class="canvas-wrapper" :style="{ transform: `scale(${zoomLevel}) ${isRotated ? 'rotate(90deg)' : ''}` }">
+              <canvas ref="fullscreenCanvas"></canvas>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="switch-case-btn" :class="{ active: currentCase === 'right' }" @click="switchCase('right')">
+              🟢 情形一：交点 N 在右支 (官方解)
+            </button>
+            <button class="switch-case-btn" :class="{ active: currentCase === 'left' }" @click="switchCase('left')">
+              🔴 情形二：交点 N 在左支 (隐藏解)
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </ToolLayout>
 </template>
 
@@ -182,6 +221,65 @@ import ToolLayout from '../components/ToolLayout.vue'
 
 /** Canvas 引用 */
 const mathCanvas = ref(null)
+const fullscreenCanvas = ref(null)
+const modalViewport = ref(null)
+
+/** 全屏模态框状态与控制 */
+const showFullscreen = ref(false)
+const zoomLevel = ref(1.0)
+const isRotated = ref(false)
+
+function openFullscreen () {
+  showFullscreen.value = true
+  const w = window.innerWidth
+  if (w < 768) {
+    zoomLevel.value = Math.max(0.45, Math.min(0.9, Math.round((w - 40) / 900 * 100) / 100))
+  } else {
+    zoomLevel.value = 1.0
+  }
+  isRotated.value = false
+  nextTick(() => {
+    if (fullscreenCanvas.value) {
+      drawToCanvas(fullscreenCanvas.value, 900, 600)
+    }
+  })
+}
+
+function closeFullscreen () {
+  showFullscreen.value = false
+}
+
+function zoomIn () {
+  if (zoomLevel.value < 3.0) zoomLevel.value = Math.round((zoomLevel.value + 0.2) * 100) / 100
+}
+
+function zoomOut () {
+  if (zoomLevel.value > 0.3) zoomLevel.value = Math.round((zoomLevel.value - 0.2) * 100) / 100
+}
+
+function resetZoom () {
+  const w = window.innerWidth
+  if (w < 768 && !isRotated.value) {
+    zoomLevel.value = Math.max(0.45, Math.min(0.9, Math.round((w - 40) / 900 * 100) / 100))
+  } else if (w < 768 && isRotated.value) {
+    zoomLevel.value = Math.max(0.5, Math.min(1.1, Math.round((window.innerHeight - 180) / 900 * 100) / 100))
+  } else {
+    zoomLevel.value = 1.0
+  }
+}
+
+function toggleRotate () {
+  isRotated.value = !isRotated.value
+  const w = window.innerWidth
+  const h = window.innerHeight
+  if (w < 768) {
+    if (isRotated.value) {
+      zoomLevel.value = Math.max(0.5, Math.min(1.1, Math.round((h - 180) / 900 * 100) / 100))
+    } else {
+      zoomLevel.value = Math.max(0.45, Math.min(0.9, Math.round((w - 40) / 900 * 100) / 100))
+    }
+  }
+}
 
 /** 当前的情形：'right' 或 'left' */
 const currentCase = ref('right')
@@ -266,19 +364,15 @@ function renderMath () {
 }
 
 /**
- * 绘制核心逻辑（支持高清 Retina 屏幕自适应）
+ * 执行通用 Canvas 绘制（支持正常卡片视图与高清全屏模态框视图）
  */
-function render () {
-  const canvas = mathCanvas.value
+function drawToCanvas (canvas, targetWidth, targetHeight) {
   if (!canvas) return
   const ctx = canvas.getContext('2d')
 
   const dpr = window.devicePixelRatio || 1
-  const containerWidth = canvas.parentElement.clientWidth || 860
-  // 保持 900x600 的黄金比例
-  const displayWidth = Math.min(900, containerWidth - 30)
-  const aspect = 600 / 900
-  const displayHeight = Math.round(displayWidth * aspect)
+  const displayWidth = targetWidth
+  const displayHeight = targetHeight
 
   canvas.style.width = displayWidth + 'px'
   canvas.style.height = displayHeight + 'px'
@@ -423,6 +517,21 @@ function render () {
   }
 
   ctx.restore()
+}
+
+function render () {
+  const canvas = mathCanvas.value
+  if (!canvas) return
+  const containerWidth = canvas.parentElement.clientWidth || 860
+  const displayWidth = Math.min(900, containerWidth - 30)
+  const aspect = 600 / 900
+  const displayHeight = Math.round(displayWidth * aspect)
+
+  drawToCanvas(canvas, displayWidth, displayHeight)
+
+  if (showFullscreen.value && fullscreenCanvas.value) {
+    drawToCanvas(fullscreenCanvas.value, 900, 600)
+  }
 }
 
 onMounted(() => {
