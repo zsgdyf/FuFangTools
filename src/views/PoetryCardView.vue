@@ -1,6 +1,6 @@
 <!--
   PoetryCardView.vue - 极简卡片与古诗词壁纸生成器
-  支持 3D 悬浮视差卡片、国风渐变背景、竖排横排切换、自定义文字和高清 Canvas 离线保存
+  支持国风渐变背景、竖排横排切换、自定义文字和高清 Canvas 离线保存
 -->
 <template>
   <ToolLayout
@@ -191,12 +191,7 @@
 
       <!-- 右侧：实时预览区 -->
       <div class="preview-panel">
-        <div
-          class="card-3d-container"
-          ref="cardContainerRef"
-          @mousemove="handleMouseMove"
-          @mouseleave="handleMouseLeave"
-        >
+        <div class="card-container">
           <div
             :class="[
               'poetry-card',
@@ -206,13 +201,10 @@
               { 'style-stationery': cardStyleMode === 'stationery' }
             ]"
             :style="[
-              cardStyleMode === 'modern' ? cardBackgroundStyle : {},
-              card3DStyle
+              cardStyleMode === 'modern' ? cardBackgroundStyle : {}
             ]"
             ref="cardRef"
           >
-            <!-- 3D 视差高光层 -->
-            <div class="card-reflection"></div>
 
             <!-- 1. 传统极简国风模式 -->
             <div v-if="cardStyleMode === 'modern'" :class="['card-content', `layout-${layout}`]">
@@ -286,10 +278,6 @@
               浮<br/>方
             </div>
           </div>
-        </div>
-
-        <div class="preview-tip">
-          <span>✨ 晃动鼠标可体验 3D 悬浮反光视觉效果</span>
         </div>
       </div>
     </div>
@@ -406,50 +394,7 @@ const cardBackgroundStyle = computed(() => {
   return { background: PRESET_GRADIENTS[activeGradientIndex.value].css }
 })
 
-// --- 3D 旋转视差动效 ---
-const cardContainerRef = ref(null)
 const cardRef = ref(null)
-const card3DStyle = ref({})
-
-function handleMouseMove(e) {
-  const container = cardContainerRef.value
-  const card = cardRef.value
-  if (!container || !card) return
-
-  const rect = container.getBoundingClientRect()
-  const x = e.clientX - rect.left // 鼠标在容器内部的坐标
-  const y = e.clientY - rect.top
-
-  const xc = rect.width / 2
-  const yc = rect.height / 2
-  const dx = x - xc
-  const dy = y - yc
-
-  // 最大旋转角度 12 度
-  const maxRotate = 12
-  const rotateX = -(dy / yc) * maxRotate
-  const rotateY = (dx / xc) * maxRotate
-
-  // 反光层位置映射 (0% ~ 100%)
-  const reflectX = (x / rect.width) * 100
-  const reflectY = (y / rect.height) * 100
-
-  card3DStyle.value = {
-    transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-    transition: 'transform 0.05s ease-out',
-    '--reflect-x': `${reflectX}%`,
-    '--reflect-y': `${reflectY}%`
-  }
-}
-
-function handleMouseLeave() {
-  card3DStyle.value = {
-    transform: 'rotateX(0deg) rotateY(0deg)',
-    transition: 'transform 0.5s ease-out',
-    '--reflect-x': '50%',
-    '--reflect-y': '50%'
-  }
-}
 
 // --- 控制器函数 ---
 function randomizePoetry() {
