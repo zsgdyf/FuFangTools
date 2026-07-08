@@ -381,14 +381,17 @@
 }
 
 /* 字体选择配置 */
-.font-serif {
-    font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+.font-serif, .font-serif * {
+    font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", "宋体", serif;
 }
-.font-kaiti {
-    font-family: "STKaiti", "KaiTi", "DFKai-SB", serif;
+.font-kaiti, .font-kaiti * {
+    font-family: "STKaiti", "KaiTi", "DFKai-SB", "楷体", serif;
 }
-.font-sans {
+.font-sans, .font-sans * {
     font-family: system-ui, -apple-system, sans-serif;
+}
+.poetry-card .card-stamp, .poetry-card .stationery-stamp {
+    font-family: 'STKaiti', 'KaiTi', "楷体", serif !important;
 }
 
 /* 暗色主题文字 */
@@ -522,7 +525,6 @@
     font-weight: bold;
     letter-spacing: 6px;
     color: #1a1a1a; /* 黑色标题 */
-    font-family: "STKaiti", "KaiTi", serif;
 }
 
 /* 正文句列样式 */
@@ -531,7 +533,6 @@
     letter-spacing: 4px;
     line-height: 2.0;
     color: #2c3e50; /* 黛黑色 */
-    font-family: "STKaiti", "KaiTi", serif;
 }
 
 /* 最左侧/最后一行 作者朝代列 */
@@ -589,7 +590,6 @@
     margin: 0;
     line-height: 1.4;
     text-align: center;
-    font-family: "STKaiti", "KaiTi", serif;
 }
 .layout-stationery.is-vertical .stationery-author-name {
     width: 1.2em; /* 垂直换行 */
