@@ -44,10 +44,16 @@
           <span>🌸 三尖瓣形 (面积 ≈ 0.393)</span>
         </button>
         <button
+          :class="['ctrl-btn', currentMode === 'pall' ? 'active-kakeya-special' : 'inactive']"
+          @click="switchMode('pall')"
+        >
+          <span>✂️ 鲍尔平移 (Páll's shift)</span>
+        </button>
+        <button
           :class="['ctrl-btn', currentMode === 'perron' ? 'active-kakeya-special' : 'inactive']"
           @click="switchMode('perron')"
         >
-          <span>🌲 佩龙树面积压缩 (极限趋于 0)</span>
+          <span>🌲 佩龙树面积压缩 (Perron Tree)</span>
         </button>
       </div>
 
@@ -91,8 +97,9 @@
       <div class="summary-box">
         <h4>🌟 挂谷猜想的现代意义</h4>
         <p>
-          虽然二维平面上的挂谷问题在 1919 年就被解决了，但高维空间（$n \ge 3$）的挂谷猜想至今仍未被完全证明或证伪！<br><br>
-          令人惊奇的是，这个看似属于纯粹几何的游戏，竟然在现代数学中与<strong>调和分析、偏微分方程（波动方程）、解析数论（多项式方法）</strong>等前沿领域产生了极深的联系。陶哲轩（Terence Tao）等菲尔兹奖得主都曾在高维挂谷猜想上做出过重要贡献。
+          虽然二维平面上的挂谷问题在 1919 年就被解决了，但高维空间（$n \ge 3$）的挂谷猜想在很长一段时间内悬而未决。<br><br>
+          令人振奋的是，就在 <strong>2025年2月</strong>，中国数学家<strong>王虹</strong>与合作者约书亚·扎尔（Joshua Zahl）成功证明了<strong>三维挂谷猜想</strong>，彻底解决了这个困扰数学界百年的难题！凭借在三维挂谷猜想等领域的卓越贡献，王虹在 <strong>2026年7月</strong> 荣获了数学界最高荣誉<strong>菲尔兹奖</strong>，成为中国籍数学家首次获得此项殊荣的人。<br><br>
+          这证明了，这个看似属于纯粹几何的游戏，实际上在现代数学中与<strong>调和分析、偏微分方程（波动方程）、解析数论（多项式方法）</strong>等前沿领域产生了极深远的联系。
         </p>
       </div>
     </section>
@@ -116,15 +123,19 @@ const modes = {
     panelClass: ''
   },
   triangle: {
-    desc: '<strong>等边三角形：</strong>高为 1 的等边三角形，面积为 $\\frac{\\sqrt{3}}{3} \\approx 0.577$。针的端点沿着三角形的边滑动，可以在三角形内部完成 60° 的方向扭转，通过组合可以完成180°旋转。',
+    desc: '<strong>等边三角形：</strong>高为 1 的等边三角形，面积为 $\\frac{\\sqrt{3}}{3} \\approx 0.577$。针的端点沿着三角形的边滑动，经历“滑动-旋转-滑动-旋转-滑动-旋转”六个阶段，可以在三角形内部完成完整的 180° 完全调头！',
     panelClass: ''
   },
   deltoid: {
-    desc: '<strong>三尖瓣形 (Deltoid)：</strong>在一个特定的三尖瓣形中，可以在任何方向放置一条长度为 1 的切线。面积为 $\\frac{\\pi}{8} \\approx 0.393$。挂谷宗一曾错误地猜测这是最小面积。',
+    desc: '<strong>三尖瓣形 (Deltoid)：</strong>在一个特定的三尖瓣形中，可以在任何方向放置一条长度为 1 的线段，且它的<strong>两个端点始终完美贴合在曲线上</strong>。面积为 $\\frac{\\pi}{8} \\approx 0.393$。挂谷宗一曾错误地猜测这是最小面积。',
     panelClass: ''
   },
+  pall: {
+    desc: '<strong>鲍尔平移 (Páll\'s shift)：</strong>将三角形从顶点劈开，并将两半沿着底边向内平移重叠。<strong>旋转角度没有丢失，但占据的总面积显著减小！</strong>',
+    panelClass: 'panel-special'
+  },
   perron: {
-    desc: '<strong>佩龙树面积压缩：</strong>演示鲍尔平移（Páll\'s shift）。将三角形切开并重叠底边，使得<strong>旋转角度不变，但占据的总面积显著减小</strong>。不断细分即可让面积趋于0！',
+    desc: '<strong>佩龙树面积压缩：</strong>将鲍尔平移无限细分！将三角形切分成 $2^n$ 份并让底边高度重叠。随着层级加深，图形像树枝一样散开，覆盖所有角度，但“树干”面积极度收缩。',
     panelClass: 'panel-special'
   }
 }
@@ -207,9 +218,9 @@ function drawFrame() {
     const h = L
     const a = 2 * h / Math.sqrt(3) // 边长
     
-    const p1 = { x: cx, y: cy - h * 2 / 3 } // 顶点
-    const p2 = { x: cx - a / 2, y: cy + h / 3 } // 左底角
-    const p3 = { x: cx + a / 2, y: cy + h / 3 } // 右底角
+    const p1 = { x: cx, y: cy - h * 2 / 3 } // 顶点 (Top)
+    const p2 = { x: cx - a / 2, y: cy + h / 3 } // 左底角 (Bottom-Left)
+    const p3 = { x: cx + a / 2, y: cy + h / 3 } // 右底角 (Bottom-Right)
     
     ctx.beginPath()
     ctx.moveTo(p1.x, p1.y)
@@ -222,30 +233,78 @@ function drawFrame() {
     ctx.lineWidth = 2
     ctx.stroke()
     
-    // 针在三角形内滑动旋转 (在夹角为60度的两边上滑动)
-    // 简单的参数化：让针的一个端点在一条边上，长度为 L，限制在三角形内。
-    // 为了简化动画演示，使针在 p2 (底角) 到 p1 的边 和 p2 到 p3 的边之间转动。
+    // 实现完整的 180 度调头状态机 (6个阶段，每阶段1.5秒)
+    const stageDuration = 1.5
+    const cycleTime = 6 * stageDuration
+    const currentT = t % cycleTime
+    const stage = Math.floor(currentT / stageDuration)
+    const progress = (currentT % stageDuration) / stageDuration
+    // 使用 easeInOut 平滑过渡
+    const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2
     
-    // 周期性滑动，每3秒一个来回
-    const phase = (Math.sin(t * 2) + 1) / 2 // 0 to 1
-    // angle from 0 to 60 degrees (0 to PI/3) relative to the bottom edge
-    const angle = phase * (Math.PI / 3) 
+    let needleX1, needleY1, needleX2, needleY2
     
-    // 针的长度为 L。我们让针保持一端在左侧边，一端在底边。
-    // 左侧边与底边夹角为 60度。针端点坐标：A 在底边，B在左边。
-    // A = p2.x + x_a, p2.y
-    // B 在线上，B_x = p2.x + x_b*cos(60), B_y = p2.y - x_b*sin(60)
-    // 根据正弦定理，A和B的距离为L。
-    // a_len = L * sin(60 - angle) / sin(60)
-    // b_len = L * sin(angle) / sin(60)
     const sin60 = Math.sin(Math.PI / 3)
-    const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
-    const b_len = L * Math.sin(angle) / sin60
+    const cos60 = Math.cos(Math.PI / 3)
     
-    const needleX1 = p2.x + a_len
-    const needleY1 = p2.y
-    const needleX2 = p2.x + b_len * Math.cos(Math.PI / 3)
-    const needleY2 = p2.y - b_len * Math.sin(Math.PI / 3)
+    if (stage === 0) {
+      // 阶段 0: 针在底边 p2-p3 上滑动，从右向左，最终针的一个端点碰到 p2
+      // 针长为 L, 刚开始时可能在中部，我们让它滑动到 p2
+      // 当在底边时，针完全躺平
+      const startX = p3.x - L // 偏右
+      const endX = p2.x // 偏左
+      needleX1 = startX + (endX - startX) * ease
+      needleY1 = p2.y
+      needleX2 = needleX1 + L
+      needleY2 = p2.y
+    } else if (stage === 1) {
+      // 阶段 1: 绕 p2 旋转，从底边旋转到左边 (60度)
+      const angle = ease * (Math.PI / 3)
+      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
+      const b_len = L * Math.sin(angle) / sin60
+      needleX1 = p2.x + a_len
+      needleY1 = p2.y
+      needleX2 = p2.x + b_len * cos60
+      needleY2 = p2.y - b_len * sin60
+    } else if (stage === 2) {
+      // 阶段 2: 沿左边从 p2 滑动到 p1
+      const start_b = L
+      const end_b = a // 顶点
+      const current_b = start_b + (end_b - start_b) * ease
+      needleX2 = p2.x + current_b * cos60
+      needleY2 = p2.y - current_b * sin60
+      needleX1 = p2.x + (current_b - L) * cos60
+      needleY1 = p2.y - (current_b - L) * sin60
+    } else if (stage === 3) {
+      // 阶段 3: 绕 p1 旋转，从左边旋转到右边 (60度)
+      // 这里的参考系是以 p1 为原点，针两端在 p1-p2 和 p1-p3 上
+      const angle = ease * (Math.PI / 3)
+      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
+      const b_len = L * Math.sin(angle) / sin60
+      // a_len 在左边，b_len 在右边
+      needleX1 = p1.x - a_len * cos60
+      needleY1 = p1.y + a_len * sin60
+      needleX2 = p1.x + b_len * cos60
+      needleY2 = p1.y + b_len * sin60
+    } else if (stage === 4) {
+      // 阶段 4: 沿右边从 p1 滑动到 p3
+      const start_b = L
+      const end_b = a // 到达底角
+      const current_b = start_b + (end_b - start_b) * ease
+      needleX2 = p1.x + current_b * cos60
+      needleY2 = p1.y + current_b * sin60
+      needleX1 = p1.x + (current_b - L) * cos60
+      needleY1 = p1.y + (current_b - L) * sin60
+    } else if (stage === 5) {
+      // 阶段 5: 绕 p3 旋转，从右边旋转到底边 (60度)
+      const angle = ease * (Math.PI / 3)
+      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
+      const b_len = L * Math.sin(angle) / sin60
+      needleX1 = p3.x - a_len * cos60
+      needleY1 = p3.y - a_len * sin60
+      needleX2 = p3.x - b_len
+      needleY2 = p3.y
+    }
     
     ctx.beginPath()
     ctx.moveTo(needleX1, needleY1)
@@ -255,7 +314,7 @@ function drawFrame() {
     ctx.lineCap = 'round'
     ctx.stroke()
     
-    // 绘制滑动轨迹辅助线
+    // 绘制两端端点
     ctx.beginPath()
     ctx.arc(needleX1, needleY1, 4, 0, Math.PI*2)
     ctx.arc(needleX2, needleY2, 4, 0, Math.PI*2)
@@ -264,10 +323,10 @@ function drawFrame() {
     
   } else if (currentMode.value === 'deltoid') {
     // 绘制三尖瓣形
-    const r = L / 4 // 参数方程中的 r
+    const r = L / 4 // 参数方程中的 r，使得相切线段长为 4r = L
     const drawDeltoid = (ctx, cx, cy, r) => {
       ctx.beginPath()
-      for(let theta = 0; theta <= Math.PI * 2 + 0.1; theta += 0.05) {
+      for(let theta = 0; theta <= Math.PI * 2 + 0.1; theta += 0.02) {
         const x = cx + 2 * r * Math.cos(theta) + r * Math.cos(2 * theta)
         const y = cy + 2 * r * Math.sin(theta) - r * Math.sin(2 * theta)
         if (theta === 0) ctx.moveTo(x, y)
@@ -283,26 +342,22 @@ function drawFrame() {
     ctx.lineWidth = 2
     ctx.stroke()
     
-    // 针在三尖瓣内滑动并相切
-    // 在 Deltoid 中，长度为 4r 的切线段端点始终在曲线上，且切点在中间滑动。
-    // 针的倾斜角 alpha = theta / 2
-    const theta = (t * 1.5) % (Math.PI * 2)
+    // 针在三尖瓣内旋转并完美相切，且端点落在曲线上
+    // 根据几何特性，当切点参数为 phi 时，端点参数精确为 phi - 2π/3 和 phi + 2π/3
+    const phi = (t * 1.5) % (Math.PI * 2)
     
-    // 两个端点的参数（数学性质：相差 2/3 * PI 并不是端点，端点是切线的交点，实际上端点的坐标参数有复杂关系。
-    // 为了平滑演示，我们可以直接利用切线角度 alpha。Deltoid的一条切线角度为 alpha 时，它上面的线段长度 4r 刚好两头碰到边界）
-    const alpha = -theta / 2
-    const tangentPointX = cx + 2 * r * Math.cos(theta) + r * Math.cos(2 * theta)
-    const tangentPointY = cy + 2 * r * Math.sin(theta) - r * Math.sin(2 * theta)
+    const phi1 = phi - 2 * Math.PI / 3
+    const phi2 = phi + 2 * Math.PI / 3
     
-    // 根据几何特性，这条长度为 L (4r) 的切线段的中点轨迹是一个圆（内切圆），圆心在原点，半径为 r。
-    const midX = cx + r * Math.cos(-alpha)
-    const midY = cy + r * Math.sin(-alpha)
+    const nx1 = cx + 2 * r * Math.cos(phi1) + r * Math.cos(2 * phi1)
+    const ny1 = cy + 2 * r * Math.sin(phi1) - r * Math.sin(2 * phi1)
     
-    // 针的两个端点
-    const nx1 = midX + (L / 2) * Math.cos(-alpha + Math.PI/2)
-    const ny1 = midY + (L / 2) * Math.sin(-alpha + Math.PI/2)
-    const nx2 = midX - (L / 2) * Math.cos(-alpha + Math.PI/2)
-    const ny2 = midY - (L / 2) * Math.sin(-alpha + Math.PI/2)
+    const nx2 = cx + 2 * r * Math.cos(phi2) + r * Math.cos(2 * phi2)
+    const ny2 = cy + 2 * r * Math.sin(phi2) - r * Math.sin(2 * phi2)
+    
+    // 切点
+    const tx = cx + 2 * r * Math.cos(phi) + r * Math.cos(2 * phi)
+    const ty = cy + 2 * r * Math.sin(phi) - r * Math.sin(2 * phi)
     
     ctx.beginPath()
     ctx.moveTo(nx1, ny1)
@@ -312,71 +367,112 @@ function drawFrame() {
     ctx.lineCap = 'round'
     ctx.stroke()
     
+    // 绘制端点，展示它们贴在曲线上
     ctx.beginPath()
-    ctx.arc(tangentPointX, tangentPointY, 3, 0, Math.PI*2)
+    ctx.arc(nx1, ny1, 4, 0, Math.PI*2)
+    ctx.arc(nx2, ny2, 4, 0, Math.PI*2)
     ctx.fillStyle = '#10b981'
     ctx.fill()
+    
+    // 绘制切点
+    ctx.beginPath()
+    ctx.arc(tx, ty, 3, 0, Math.PI*2)
+    ctx.fillStyle = '#f59e0b'
+    ctx.fill()
 
-  } else if (currentMode.value === 'perron') {
-    // 佩龙树 (Páll's shift) 演示
-    const h = L * 1.2
-    const base = h * 0.8 // 窄高的三角形
+  } else if (currentMode.value === 'pall') {
+    // 鲍尔平移 (Páll's shift) 演示
+    const h = L
+    const base = h * 1.2
     const baseY = cy + h / 2
     const topY = cy - h / 2
     
-    // 动画周期: 0~1 (原三角形), 1~2 (劈开), 2~3 (平移重叠), 3~4 (保持), >4 (循环)
-    const cycle = (t * 0.8) % 4
+    // 动画周期: 0~1 (原三角形), 1~2 (拉开), 2~3 (平移重叠), 3~4 (保持), >4 (循环)
+    const cycle = (t * 0.7) % 4
+    let progress = cycle % 1
+    const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2
     
-    let shiftDist = 0
     let splitDist = 0
+    let overlapDist = 0
     
     if (cycle < 1) {
-      // 保持原始
-    } else if (cycle < 1.5) {
-      // 劈开并拉开一点距离
-      splitDist = (cycle - 1) * 2 * 20
+      splitDist = 0; overlapDist = 0
     } else if (cycle < 2) {
-      splitDist = 20
+      splitDist = ease * 30; overlapDist = 0
     } else if (cycle < 3) {
-      // 鲍尔平移：沿着底边相互靠近并重叠
-      splitDist = 20
-      shiftDist = (cycle - 2) * (base / 1.5 + 20) 
+      splitDist = 30; overlapDist = ease * (base / 2 + 10)
     } else {
-      // 保持重叠状态
-      splitDist = 20
-      shiftDist = base / 1.5 + 20
+      splitDist = 30; overlapDist = base / 2 + 10
     }
     
-    // 绘制左半边
+    // 左边一半
     ctx.beginPath()
-    ctx.moveTo(cx - splitDist - shiftDist, topY) // 顶点
-    ctx.lineTo(cx - splitDist - base/2 - shiftDist, baseY) // 左下角
-    ctx.lineTo(cx - splitDist - shiftDist, baseY) // 右下角 (原底边中点)
+    ctx.moveTo(cx - splitDist + overlapDist, topY) // 顶点
+    ctx.lineTo(cx - splitDist - base/2 + overlapDist, baseY) // 左底
+    ctx.lineTo(cx - splitDist + overlapDist, baseY) // 右底
     ctx.closePath()
     ctx.fillStyle = 'rgba(14, 165, 233, 0.2)'
     ctx.fill()
     ctx.strokeStyle = '#0ea5e9'
-    ctx.lineWidth = 1.5
+    ctx.lineWidth = 2
     ctx.stroke()
     
-    // 绘制右半边
+    // 右边一半
     ctx.beginPath()
-    ctx.moveTo(cx + splitDist + shiftDist, topY) // 顶点
-    ctx.lineTo(cx + splitDist + shiftDist, baseY) // 左下角 (原底边中点)
-    ctx.lineTo(cx + splitDist + base/2 + shiftDist, baseY) // 右下角
+    ctx.moveTo(cx + splitDist - overlapDist, topY) // 顶点
+    ctx.lineTo(cx + splitDist - overlapDist, baseY) // 左底
+    ctx.lineTo(cx + splitDist + base/2 - overlapDist, baseY) // 右底
     ctx.closePath()
-    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)' // 橙色透明
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)'
     ctx.fill()
     ctx.strokeStyle = '#f59e0b'
-    ctx.lineWidth = 1.5
+    ctx.lineWidth = 2
     ctx.stroke()
     
-    // 绘制重叠提示文字
     if (cycle > 2.5) {
       ctx.fillStyle = '#10b981'
       ctx.font = 'bold 16px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText('▼ 面积缩小，但保留了所有的旋转方向', cx, topY - 20)
+      ctx.fillText('▼ 底部重叠，使得总面积变小，但旋转角度保留', cx, topY - 20)
+    }
+    
+  } else if (currentMode.value === 'perron') {
+    // 佩龙树 (Perron Tree) 级数演示
+    // 动画展示树的不断生长分叉，级别从 0 到 4
+    const h = L * 1.3
+    const baseY = cy + h / 2
+    const topY = cy - h / 2
+    const baseW = L * 2 // 树冠顶部散开的总宽度
+    const bottomW = L * 0.3 // 底部重叠后压缩的基底宽度
+    
+    // 级别切换：每2秒增加一级，最高4级，然后重置
+    const level = Math.floor((t * 0.6) % 5)
+    const numTriangles = Math.pow(2, level)
+    
+    ctx.fillStyle = '#475569'
+    ctx.font = 'bold 18px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText(`佩龙树细分层级: ${level} (共 ${numTriangles} 个三角形)`, cx, topY - 20)
+    
+    for (let i = 0; i < numTriangles; i++) {
+      // 顶点均匀分布在顶部 baseW 内
+      const tx = numTriangles === 1 ? cx : cx - baseW/2 + i * (baseW / (numTriangles - 1))
+      // 底边中心紧密排列在 bottomW 内
+      const bx = numTriangles === 1 ? cx : cx - bottomW/2 + i * (bottomW / (numTriangles - 1))
+      const triangleBase = baseW / numTriangles
+      
+      ctx.beginPath()
+      ctx.moveTo(tx, topY) // 顶点
+      ctx.lineTo(bx - triangleBase / 2, baseY) // 左底
+      ctx.lineTo(bx + triangleBase / 2, baseY) // 右底
+      ctx.closePath()
+      
+      // 交替颜色展示树干的重叠
+      ctx.fillStyle = i % 2 === 0 ? 'rgba(14, 165, 233, 0.15)' : 'rgba(245, 158, 11, 0.15)'
+      ctx.fill()
+      ctx.strokeStyle = i % 2 === 0 ? 'rgba(14, 165, 233, 0.6)' : 'rgba(245, 158, 11, 0.6)'
+      ctx.lineWidth = 1
+      ctx.stroke()
     }
   }
   
