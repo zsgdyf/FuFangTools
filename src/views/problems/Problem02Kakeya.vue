@@ -69,6 +69,38 @@
       </div>
     </section>
 
+    <!-- 经典图形面积计算过程 -->
+    <section class="solution-section" style="margin-bottom: 2rem;">
+      <h2 class="solution-title">🧮 经典图形的面积计算过程</h2>
+      <div class="step-card">
+        <p>假设我们要在图形中完美放入一根长度为 <strong>$L = 1$</strong> 的针（线段），让它能够完成180°调头，这三种图形的最小面积推导如下：</p>
+        
+        <h3>🔴 1. 圆形 (Circle)</h3>
+        <ul>
+          <li>最平庸但直观的情况。为了让长度为 $1$ 的针能在圆内自由旋转且不跑出去，圆的<strong>直径</strong>必须等于 $1$。</li>
+          <li>半径 $R = \frac{1}{2}$。</li>
+          <li>面积 $A = \pi R^2 = \pi (\frac{1}{2})^2 = \mathbf{\frac{\pi}{4} \approx 0.785}$。</li>
+        </ul>
+
+        <h3>🔺 2. 等边三角形 (Equilateral Triangle)</h3>
+        <ul>
+          <li>为了让针在顶点处通过“扫一个扇形”完成 60° 转向且不越过对边，等边三角形的<strong>高（Altitude）</strong>必须至少等于针的长度，即极限情况下 $h = 1$。</li>
+          <li>设边长为 $a$，高的公式为 $h = a \cdot \sin(60^\circ) = a \cdot \frac{\sqrt{3}}{2}$。</li>
+          <li>代入 $h = 1$，得到边长 $a = \frac{2}{\sqrt{3}}$。</li>
+          <li>面积 $A = \frac{1}{2} \cdot a \cdot h = \frac{1}{2} \cdot \frac{2}{\sqrt{3}} \cdot 1 = \mathbf{\frac{\sqrt{3}}{3} \approx 0.577}$。</li>
+        </ul>
+
+        <h3>🌸 3. 三尖瓣形 (Deltoid)</h3>
+        <ul>
+          <li>三尖瓣形由一个小圆（半径 $r$）在一个大圆（半径 $3r$）内部滚动形成。它有一个绝妙的几何特性：<strong>它内部任意方向的切线段（端点落在曲线上）的长度是恒定的，且等于 $4r$。</strong></li>
+          <li>因为放入的针长度为 $1$，所以 $4r = 1 \implies r = \frac{1}{4}$。</li>
+          <li>通过格林公式推导，三尖瓣形的闭合面积恒定为大圆面积的 $\frac{2}{9}$，即 $A = 2\pi r^2$。</li>
+          <li>面积 $A = 2\pi (\frac{1}{4})^2 = 2\pi \cdot \frac{1}{16} = \mathbf{\frac{\pi}{8} \approx 0.393}$。</li>
+          <li><strong>历史小插曲：</strong>因为 $\frac{\pi}{8}$ 这个结果非常漂亮且大幅度压缩了面积，提出这个猜想的挂谷宗一本人，在很长一段时间里都坚信这就是面积最小的挂谷集，直到贝西科维奇用下方的“佩龙树”打破了常规凸图形的限制！</li>
+        </ul>
+      </div>
+    </section>
+
     <!-- 详细解答过程 -->
     <section class="solution-section">
       <h2 class="solution-title">📐 贝西科维奇证明的数学原理</h2>
