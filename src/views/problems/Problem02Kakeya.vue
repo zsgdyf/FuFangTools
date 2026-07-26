@@ -244,66 +244,49 @@ function drawFrame() {
     
     let needleX1, needleY1, needleX2, needleY2
     
-    const sin60 = Math.sin(Math.PI / 3)
-    const cos60 = Math.cos(Math.PI / 3)
-    
     if (stage === 0) {
-      // 阶段 0: 针在底边 p2-p3 上滑动，从右向左，最终针的一个端点碰到 p2
-      // 针长为 L, 刚开始时可能在中部，我们让它滑动到 p2
-      // 当在底边时，针完全躺平
-      const startX = p3.x - L // 偏右
-      const endX = p2.x // 偏左
-      needleX1 = startX + (endX - startX) * ease
-      needleY1 = p2.y
-      needleX2 = needleX1 + L
+      // 阶段 0: 绕左底角 p2 旋转
+      const angle = -Math.PI / 3 + ease * (Math.PI / 3)
+      needleX1 = p2.x + L * Math.cos(angle)
+      needleY1 = p2.y + L * Math.sin(angle)
+      needleX2 = p2.x
       needleY2 = p2.y
     } else if (stage === 1) {
-      // 阶段 1: 绕 p2 旋转，从底边旋转到左边 (60度)
-      const angle = ease * (Math.PI / 3)
-      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
-      const b_len = L * Math.sin(angle) / sin60
-      needleX1 = p2.x + a_len
+      // 阶段 1: 沿底边向右滑动
+      needleX2 = p2.x + ease * (a - L)
+      needleY2 = p2.y
+      needleX1 = needleX2 + L
       needleY1 = p2.y
-      needleX2 = p2.x + b_len * cos60
-      needleY2 = p2.y - b_len * sin60
     } else if (stage === 2) {
-      // 阶段 2: 沿左边从 p2 滑动到 p1
-      const start_b = L
-      const end_b = a // 顶点
-      const current_b = start_b + (end_b - start_b) * ease
-      needleX2 = p2.x + current_b * cos60
-      needleY2 = p2.y - current_b * sin60
-      needleX1 = p2.x + (current_b - L) * cos60
-      needleY1 = p2.y - (current_b - L) * sin60
-    } else if (stage === 3) {
-      // 阶段 3: 绕 p1 旋转，从左边旋转到右边 (60度)
-      // 这里的参考系是以 p1 为原点，针两端在 p1-p2 和 p1-p3 上
-      const angle = ease * (Math.PI / 3)
-      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
-      const b_len = L * Math.sin(angle) / sin60
-      // a_len 在左边，b_len 在右边
-      needleX1 = p1.x - a_len * cos60
-      needleY1 = p1.y + a_len * sin60
-      needleX2 = p1.x + b_len * cos60
-      needleY2 = p1.y + b_len * sin60
-    } else if (stage === 4) {
-      // 阶段 4: 沿右边从 p1 滑动到 p3
-      const start_b = L
-      const end_b = a // 到达底角
-      const current_b = start_b + (end_b - start_b) * ease
-      needleX2 = p1.x + current_b * cos60
-      needleY2 = p1.y + current_b * sin60
-      needleX1 = p1.x + (current_b - L) * cos60
-      needleY1 = p1.y + (current_b - L) * sin60
-    } else if (stage === 5) {
-      // 阶段 5: 绕 p3 旋转，从右边旋转到底边 (60度)
-      const angle = ease * (Math.PI / 3)
-      const a_len = L * Math.sin(Math.PI / 3 - angle) / sin60
-      const b_len = L * Math.sin(angle) / sin60
-      needleX1 = p3.x - a_len * cos60
-      needleY1 = p3.y - a_len * sin60
-      needleX2 = p3.x - b_len
+      // 阶段 2: 绕右底角 p3 旋转
+      const angle = Math.PI + ease * (Math.PI / 3)
+      needleX1 = p3.x + L * Math.cos(angle)
+      needleY1 = p3.y + L * Math.sin(angle)
+      needleX2 = p3.x
       needleY2 = p3.y
+    } else if (stage === 3) {
+      // 阶段 3: 沿右侧边向上滑动
+      const dx = -0.5, dy = -Math.sqrt(3) / 2
+      const slideDist = ease * (a - L)
+      needleX2 = p3.x + slideDist * dx
+      needleY2 = p3.y + slideDist * dy
+      needleX1 = needleX2 + L * dx
+      needleY1 = needleY2 + L * dy
+    } else if (stage === 4) {
+      // 阶段 4: 绕顶部顶点 p1 旋转
+      const angle = Math.PI / 3 + ease * (Math.PI / 3)
+      needleX2 = p1.x + L * Math.cos(angle)
+      needleY2 = p1.y + L * Math.sin(angle)
+      needleX1 = p1.x
+      needleY1 = p1.y
+    } else if (stage === 5) {
+      // 阶段 5: 沿左侧边向下滑动
+      const dx = -0.5, dy = Math.sqrt(3) / 2
+      const slideDist = ease * (a - L)
+      needleX1 = p1.x + slideDist * dx
+      needleY1 = p1.y + slideDist * dy
+      needleX2 = needleX1 + L * dx
+      needleY2 = needleY1 + L * dy
     }
     
     ctx.beginPath()
@@ -343,21 +326,25 @@ function drawFrame() {
     ctx.stroke()
     
     // 针在三尖瓣内旋转并完美相切，且端点落在曲线上
-    // 根据几何特性，当切点参数为 phi 时，端点参数精确为 phi - 2π/3 和 phi + 2π/3
-    const phi = (t * 1.5) % (Math.PI * 2)
+    // 根据数学特性，长度为 4r 的切线段，其中点在一个半径为 r 的内切圆上移动。
+    // 切线角度设为 alpha
+    const alpha = (t * 1.5) % (Math.PI * 2)
     
-    const phi1 = phi - 2 * Math.PI / 3
-    const phi2 = phi + 2 * Math.PI / 3
+    // 中点坐标 (位于半径为 r 的内切圆上，相位为 -2 * alpha)
+    const midX = cx + r * Math.cos(2 * alpha)
+    const midY = cy - r * Math.sin(2 * alpha)
     
-    const nx1 = cx + 2 * r * Math.cos(phi1) + r * Math.cos(2 * phi1)
-    const ny1 = cy + 2 * r * Math.sin(phi1) - r * Math.sin(2 * phi1)
+    // 针的两个端点 (从中点向两端延伸 2r)
+    const nx1 = midX + 2 * r * Math.cos(alpha)
+    const ny1 = midY + 2 * r * Math.sin(alpha)
     
-    const nx2 = cx + 2 * r * Math.cos(phi2) + r * Math.cos(2 * phi2)
-    const ny2 = cy + 2 * r * Math.sin(phi2) - r * Math.sin(2 * phi2)
+    const nx2 = midX - 2 * r * Math.cos(alpha)
+    const ny2 = midY - 2 * r * Math.sin(alpha)
     
-    // 切点
-    const tx = cx + 2 * r * Math.cos(phi) + r * Math.cos(2 * phi)
-    const ty = cy + 2 * r * Math.sin(phi) - r * Math.sin(2 * phi)
+    // 切点 (参数 theta = -2 * alpha)
+    const theta = -2 * alpha
+    const tx = cx + 2 * r * Math.cos(theta) + r * Math.cos(2 * theta)
+    const ty = cy + 2 * r * Math.sin(theta) - r * Math.sin(2 * theta)
     
     ctx.beginPath()
     ctx.moveTo(nx1, ny1)
@@ -367,14 +354,14 @@ function drawFrame() {
     ctx.lineCap = 'round'
     ctx.stroke()
     
-    // 绘制端点，展示它们贴在曲线上
+    // 绘制端点，展示它们完美贴在曲线上
     ctx.beginPath()
     ctx.arc(nx1, ny1, 4, 0, Math.PI*2)
     ctx.arc(nx2, ny2, 4, 0, Math.PI*2)
     ctx.fillStyle = '#10b981'
     ctx.fill()
     
-    // 绘制切点
+    // 绘制切点，证明它不仅在针上，而且在曲线上
     ctx.beginPath()
     ctx.arc(tx, ty, 3, 0, Math.PI*2)
     ctx.fillStyle = '#f59e0b'
