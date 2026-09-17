@@ -23,9 +23,9 @@
 
       <!-- 中间：操作按钮 -->
       <div class="controls-section">
-        <button class="btn-calc btn-action" @click="doEncode">Base64 编码 &rarr;</button>
-        <button class="btn-calc btn-action" @click="doDecode">&larr; Base64 解码</button>
-        <button class="btn-clear btn-action" @click="clearAll">清空 ↺</button>
+        <button class="btn-calc btn-action" @click="doEncode">编码 &rarr;</button>
+        <button class="btn-calc btn-action" @click="doDecode">&larr; 解码</button>
+        <button class="btn-clear btn-action" @click="clearAll">清空</button>
       </div>
 
       <!-- 右栏：Base64 编码 -->

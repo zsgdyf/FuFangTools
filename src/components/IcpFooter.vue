@@ -53,17 +53,19 @@ onMounted(async () => {
 .icp-footer {
   width: 100%;
   text-align: center;
-  padding: 30px 0 20px 0;
+  padding: 24px 0 16px 0;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--text-light);
 }
 
 .icp-footer a {
   color: inherit;
   text-decoration: none;
+  transition: var(--transition);
 }
 
 .icp-footer a:hover {
+  color: var(--text-main);
   text-decoration: underline;
 }
 

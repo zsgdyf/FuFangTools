@@ -9,6 +9,8 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
+    // 监听所有网络接口，允许局域网设备（如手机）访问
+    host: '0.0.0.0',
     // 开发服务器代理配置：将 API 请求转发到 Express 后端
     proxy: {
       '/api': {

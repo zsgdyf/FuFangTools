@@ -67,7 +67,17 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  // 路由跳转时自动滚动到页面顶部
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      // 浏览器前进/后退时保持历史位置
+      return savedPosition
+    } else {
+      // 页面新跳转时瞬间复位至顶部
+      return { top: 0, left: 0 }
+    }
+  }
 })
 
 // 全局路由守卫：根据路由 meta 信息动态设置页面标题
@@ -84,6 +94,11 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+})
+
+// 全局后置钩子：双重保障确保每次路由切换页面视口滚回顶部
+router.afterEach(() => {
+  window.scrollTo(0, 0)
 })
 
 export default router

@@ -28,6 +28,7 @@
   "homepage": "https://github.com/zsgdyf/FuFangTools#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "lucide-vue-next": "^1.0.0",
     "open": "^8.4.2",
     "qrcode-generator": "^1.4.4"
   },

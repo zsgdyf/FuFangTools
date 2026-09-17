@@ -1,40 +1,47 @@
 /* ===================================
    BMI计算器特定样式
+   风格：日系无印极简 / 纸质健康度量
    =================================== */
 
+.bmi-inputs {
+    display: flex;
+    gap: 16px;
+}
+
 .bmi-inputs .input-group {
-    width: 50%;
+    flex: 1;
 }
 
 .result-section p {
-    margin: 10px 0;
-    font-size: 1.1rem;
-    color: var(--text-main);
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
 }
 
 .result-section p strong {
-    font-size: 1.5rem;
-    padding: 0 8px;
-    color: var(--primary);
+    font-size: 1.4rem;
+    padding: 0 4px;
+    color: var(--text-main);
 }
 
-.result-section #bmi-category.underweight strong {
-    color: #f59e0b;
+.result-section .underweight strong {
+    color: #b45309;
 }
-.result-section #bmi-category.normal strong {
-    color: #10b981;
+.result-section .normal strong {
+    color: #15803d;
 }
-.result-section #bmi-category.overweight strong {
-    color: #ef4444;
+.result-section .overweight strong {
+    color: #b91c1c;
 }
 
 .bmi-indicator-bar {
     position: relative;
     display: flex;
-    height: 12px;
-    border-radius: 6px;
+    height: 8px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-top: 25px;
+    margin-top: 24px;
+    background-color: var(--bg-hover);
 }
 
 .indicator-segment {
@@ -42,27 +49,27 @@
 }
 
 .indicator-segment.underweight {
-    background-color: #f59e0b;
+    background-color: #fcd34d;
     width: 25%;
 }
 .indicator-segment.normal {
-    background-color: #10b981;
+    background-color: #86efac;
     width: 35%;
 }
 .indicator-segment.overweight {
-    background-color: #ef4444;
+    background-color: #fca5a5;
     width: 40%;
 }
 
 .indicator-pointer {
     position: absolute;
-    top: -4px;
+    top: -3px;
     left: 0;
     width: 2px;
-    height: 20px;
+    height: 14px;
     background-color: var(--text-main);
     transform: translateX(-50%);
-    transition: left 0.5s ease;
+    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border-radius: 2px;
     z-index: 10;
 }
@@ -70,15 +77,18 @@
 .indicator-labels {
     position: relative;
     height: 16px;
-    margin: 4px 0;
+    margin: 6px 0 0;
 }
+
 .indicator-labels span {
     position: absolute;
     top: 0;
-    font-size: 0.8rem;
+    font-size: 0.76rem;
     color: var(--text-light);
     transform: translateX(-50%);
+    font-family: SFMono-Regular, Consolas, monospace;
 }
+
 .indicator-labels span:nth-child(1) {
     left: 25%;
 }
@@ -86,8 +96,16 @@
     left: 60%;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
+    .bmi-inputs {
+        flex-direction: column;
+        gap: 12px;
+    }
     .bmi-inputs .input-group {
         width: 100%;
     }
+    .result-section p strong {
+        font-size: 1.25rem;
+    }
 }
+

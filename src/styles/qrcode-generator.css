@@ -1,12 +1,17 @@
-/* qrcode-generator.css */
+/* ===================================
+   二维码生成工具特定样式
+   风格：日系无印极简 / 纸质微边框
+   =================================== */
+
 .qr-code-container {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
+    margin: 10px auto;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
 }
 
@@ -14,4 +19,4 @@
     max-width: 100%;
     height: auto;
     display: block;
-}
+}

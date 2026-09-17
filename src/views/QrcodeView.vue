@@ -21,8 +21,8 @@
 
     <!-- 操作按钮 -->
     <div class="btn-group">
-      <button class="btn-calc" @click="generateQR">立即生成 ✨</button>
-      <button class="btn-clear" @click="clearAll">清空 ↺</button>
+      <button class="btn-calc" @click="generateQR">生成二维码</button>
+      <button class="btn-clear" @click="clearAll">清空</button>
     </div>
 
     <!-- 二维码显示区域 -->

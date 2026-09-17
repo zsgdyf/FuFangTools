@@ -21,8 +21,11 @@
 
     <!-- 操作按钮 -->
     <div class="btn-group">
-      <button class="btn-calc" :disabled="isLoading" @click="convertUrls">批量转换 ✨</button>
-      <button class="btn-clear" @click="clearAll">清空 ↺</button>
+      <button class="btn-calc" :disabled="isLoading" @click="convertUrls">
+        <span v-if="isLoading">解析中...</span>
+        <span v-else>批量转换</span>
+      </button>
+      <button class="btn-clear" @click="clearAll">清空</button>
     </div>
 
     <!-- 解析结果区域 -->

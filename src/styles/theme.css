@@ -1,23 +1,96 @@
+/* ===================================
+   浮方工具箱 - 全局设计变量与重置规范
+   风格：日系无印极简 / Notion & Craft 纸质温润风
+   =================================== */
+
 :root {
-    --primary: #0ea5e9;
-    --primary-hover: #0284c7;
-    --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
-    --text-main: #334155;
+    /* 背景色阶：清爽冷白带微蓝氛围 */
+    --bg-base: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-muted: #f0f7ff;
+    --bg-hover: #f1f5f9;
+    --bg-active: #e2e8f0;
+
+    /* 边框体系：细线微蓝与浅灰色 */
+    --border-color: #e2e8f0;
+    --border-hover: #bae6fd;
+    --border-focus: #0284c7;
+
+    /* 文本色阶：深邃炭青黑与石板灰 */
+    --text-main: #1e293b;
+    --text-secondary: #64748b;
     --text-light: #94a3b8;
+    --text-inverse: #ffffff;
+
+    /* 主题操作色：灵动天青蓝与现代克莱因蓝 */
+    --primary: #0284c7;
+    --primary-hover: #0369a1;
+    --primary-light: #f0f9ff;
+    --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+
+    /* 强调与点缀色 */
+    --accent: #0ea5e9;
+    --accent-hover: #0284c7;
+    --accent-glow: rgba(14, 165, 233, 0.15);
+
+    /* 阴影规范：包含微弱蓝光环境投影 */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 16px rgba(14, 165, 233, 0.08);
+    --shadow-lg: 0 12px 28px rgba(14, 165, 233, 0.12);
+
+    /* 圆角规范：现代适度圆角 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    /* 动画过渡 */
+    --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* 向下兼容原变量名 */
+    --card-bg: var(--bg-surface);
+    --shadow: var(--shadow-sm);
+    --primary-hover-legacy: var(--primary-hover);
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body, button, input, select, textarea {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--text-main);
 }
 
+body {
+    background-color: var(--bg-base);
+    background: radial-gradient(120% 70% at 50% 0%, #e0f2fe 0%, #f0f9ff 30%, #f8fafc 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* MathJax 容器修复 */
 mjx-container *, mjx-container *::before, mjx-container *::after,
 mjx-assistive-mml *, mjx-surd *, mjx-box * {
     box-sizing: content-box !important;
@@ -32,24 +105,4 @@ mjx-container[jax="SVG"][display="true"] {
 mjx-container[jax="SVG"][display="true"] svg {
     max-width: 100% !important;
     height: auto !important;
-}
-
-body {
-    background: var(--bg-gradient);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    color: var(--text-main);
-}
-
-#app {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
 }

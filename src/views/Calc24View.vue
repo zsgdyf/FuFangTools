@@ -23,8 +23,8 @@
 
     <!-- 操作按钮 -->
     <div class="btn-group">
-      <button class="btn-calc" @click="runSolver">开始计算 ✨</button>
-      <button class="btn-clear" @click="clearAll">清空 ↺</button>
+      <button class="btn-calc" @click="runSolver">开始计算</button>
+      <button class="btn-clear" @click="clearAll">清空</button>
     </div>
 
     <!-- 计算结果区域 -->

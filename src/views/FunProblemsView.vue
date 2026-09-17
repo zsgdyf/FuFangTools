@@ -12,20 +12,20 @@
       <!-- 题目切换导航栏 -->
       <div class="problem-selector">
         <button 
-          :class="['selector-tab', activeTab === 'hyperbola' ? 'active' : '']"
-          @click="activeTab = 'hyperbola'"
-        >
-          <span>📐 【01】2022年全国乙卷理科第11题：双曲线切线</span>
-        </button>
-        <button 
           :class="['selector-tab', activeTab === 'kakeya' ? 'active' : '']"
           @click="activeTab = 'kakeya'"
         >
-          <span>✨ 【02】二维挂谷猜想动态图示与佩龙树</span>
+          <span>【02】二维挂谷猜想与佩龙树</span>
         </button>
-        <button class="selector-tab disabled" title="更多趣味题解与动态图示正在准备中">
-          <span>💡 更多经典趣味题目与动态图示</span>
-          <span class="badge-coming">敬请期待</span>
+        <button 
+          :class="['selector-tab', activeTab === 'hyperbola' ? 'active' : '']"
+          @click="activeTab = 'hyperbola'"
+        >
+          <span>【01】双曲线切线问题 (2022乙卷)</span>
+        </button>
+        <button class="selector-tab disabled" title="更多经典趣味题目与动态图示正在准备中">
+          <span>更多题解与图示</span>
+          <span class="badge-coming">筹备中</span>
         </button>
       </div>
 
