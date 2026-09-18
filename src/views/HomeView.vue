@@ -10,7 +10,7 @@
   <div class="home-container">
     <!-- 首页头部标语与搜索区域 -->
     <header class="home-header">
-      <div class="header-badge">Online Utilities</div>
+      <div class="header-badge">FuFang Utilities</div>
       <h1 class="main-title">浮方工具箱</h1>
       <p class="main-desc">克制、安静且触手可及的在线小工具集</p>
 
